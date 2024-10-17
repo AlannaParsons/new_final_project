@@ -59,3 +59,8 @@ user = {
 
 # Next Steps
 
+# Future Dev 
+
+- generate aesthetic palette for user
+ https://www.reddit.com/r/gamedev/comments/1b9qvip/palette_generation_api_looking_for_an_alternative/?rdt=58257
+

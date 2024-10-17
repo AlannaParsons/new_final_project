@@ -1,9 +1,35 @@
 // series of drop downs for each categorie. buttons for preview popup? check boxes to add/remove
+"use client"
 
 import Image from "next/image";
-import styles from "./page.module.css";
+import styles from "../page.module.css";
+import {   
+  Button,
+  Flex,
+  IconButton,
+  Input,
+  UnorderedList,
+  Spacer } from '@chakra-ui/react';
+  import { CloseIcon } from '@chakra-ui/icons'
+import { paletteData } from '../utils/mockData.js';
+import getRandomColor from '../utils/tempFunc.js';
+import React, { useState } from "react";
 
-export default function Home() {
+export default function SettingsPage() {
+  //set local state
+  const [palette, setPalette] = useState(paletteData);
+
+  const paletteAdd = () => {
+    //if (palette.length <= 10)
+    setPalette([...palette, {color: getRandomColor(), variable: null}])
+  }
+
+  const paletteDel = (index) => {
+    setPalette(palette => {
+      return palette.filter((item,i) => i !== index)
+    })
+  }
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -16,11 +42,32 @@ export default function Home() {
           priority
         />
         <ol>
+          Settings
           <li>
-            Get started by editing <code>src/app/page.js</code>.
+            Will settings be different for every page?
           </li>
-          <li>Save and see your changes instantly.</li>
+          <li>
+            Save button not hooked up
+          </li>
         </ol>
+
+        <Button onClick={paletteAdd} height='20px'> + </Button>
+
+        <UnorderedList> 
+          {palette.map((paletteVals, i) => {
+            return <Flex key={`${paletteVals.color}-${paletteVals.variable}`} align='center' padding='1'>
+              <IconButton onClick={() => paletteDel(i)} flex='1' icon={<CloseIcon />} colorScheme='red' size='xs' variant='solid' height='20px' />
+
+              <Spacer />
+              <input flex='1' type="color" id="body" name="body" defaultValue={paletteVals.color} />
+              <Spacer />
+
+              <Input flex='4' defaultValue={paletteVals.variable} placeholder='...' variant='outline' maxLength={5} />
+            </Flex>
+          })}
+        </UnorderedList>
+
+        <Button colorScheme='green'>Save</Button>
 
         <div className={styles.ctas}>
           <a
