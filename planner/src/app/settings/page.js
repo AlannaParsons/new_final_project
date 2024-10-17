@@ -1,4 +1,5 @@
-// series of drop downs for each categorie. buttons for preview popup? check boxes to add/remove
+// settings
+// currently set color and phrase to be used on "ranking page". will this be useful else where? should i split color and phrase?
 "use client"
 
 import Image from "next/image";
@@ -20,7 +21,7 @@ export default function SettingsPage() {
   const [palette, setPalette] = useState(paletteData);
 
   const paletteAdd = () => {
-    //if (palette.length <= 10)
+    //. set max palette size? if (palette.length <= 10)
     setPalette([...palette, {color: getRandomColor(), variable: null}])
   }
 
