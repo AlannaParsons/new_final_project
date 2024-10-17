@@ -1,3 +1,5 @@
+//user can rate each day in month according to personalized legend
+//can be used for mood or weather rating etc....
 "use client"
 
 import Image from "next/image";
@@ -40,7 +42,7 @@ export default function Home() {
           })}
 
           {savedData.map((date, i) => {
-            return <Button key={i} height='20px' colorScheme={date.color || 'gray'} onClick={() => colorPut(i) } >{i+1}</Button>
+            return <Button key={date} height='20px' colorScheme={date.color || 'gray'} onClick={() => colorPut(i) } >{i+1}</Button>
 
           })}
         </SimpleGrid>

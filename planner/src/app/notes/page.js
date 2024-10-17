@@ -1,3 +1,5 @@
+//user will make small notes on each day
+//would like to auto orient to current day
 "use client"
 
 import Image from "next/image";
@@ -7,14 +9,24 @@ import {
   Editable,
   EditableInput,
   EditableTextarea,
-  EditablePreview,StackDivider, VStack } from '@chakra-ui/react'
+  EditablePreview,
+  Input, InputGroup, InputLeftAddon,
+  StackDivider, VStack } from '@chakra-ui/react'
 import React, { useState } from "react";
 
 export default function Home() {
 
   const colorLegend = ['pink', 'red', 'yellow', 'green','blue', 'purple']
   const [color, setColor] = useState(colorLegend[0]);
-  const [fauxSavedData, setData] = useState(Array(daysInMonth).fill({ color: null }));
+  
+
+  let hold = Array(daysInMonth).fill(null).map((_, i) => {
+    let index = i % colorLegend.length;
+    return {color: colorLegend[index]}
+  })
+
+  const [fauxSavedData, setData] = useState(hold);
+  console.log('saveddatd:', fauxSavedData, hold)
 
   const colorLock = (color) => {
     setColor(color);
@@ -29,18 +41,16 @@ export default function Home() {
     <div className={styles.page}>
       <main className={styles.main}>
 
-        LEGEND {firstDayOfMonth}
+        LIL NOTES
         <VStack
-          divider={<StackDivider borderColor='gray.200' />}
-          spacing={4}
+          spacing={3}
           align='stretch'>
 
           {fauxSavedData.map((date, i) => {
-            return <Editable defaultValue='Take some chakra'>
-                <EditablePreview />
-                <EditableInput />
-              </Editable>
-
+            return <InputGroup key={date} size='sm'>
+              <InputLeftAddon  w='40px' backgroundColor={date.color} justifyContent="center"> {i+1}</InputLeftAddon>
+              <Input paddingLeft={3} placeholder='...' variant='flushed' maxLength={5} />
+            </InputGroup>
           })}
             
         </VStack>

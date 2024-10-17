@@ -59,8 +59,12 @@ user = {
 
 # Next Steps
 
+    - sizing not dynamic. focusing mobile design
+    - day/ month/year at a glance.
+
 # Future Dev 
 
 - generate aesthetic palette for user
+https://coolors.co/353531-ec4e20-ff9505-016fb9-000000
  https://www.reddit.com/r/gamedev/comments/1b9qvip/palette_generation_api_looking_for_an_alternative/?rdt=58257
 

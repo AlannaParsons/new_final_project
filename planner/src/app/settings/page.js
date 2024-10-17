@@ -1,5 +1,6 @@
 // settings
 // currently set color and phrase to be used on "ranking page". will this be useful else where? should i split color and phrase?
+// max length of phrase very short. revisit?
 "use client"
 
 import Image from "next/image";
