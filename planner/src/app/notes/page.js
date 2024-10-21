@@ -6,27 +6,25 @@ import Image from "next/image";
 import styles from "../page.module.css";
 import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils"
 import {   
-  Editable,
-  EditableInput,
-  EditableTextarea,
-  EditablePreview,
-  Input, InputGroup, InputLeftAddon,
-  StackDivider, VStack } from '@chakra-ui/react'
+  Input, 
+  InputGroup, 
+  InputLeftAddon,
+  VStack } from '@chakra-ui/react';
+import { colorLegend } from '../utils/mockData.js';
 import React, { useState } from "react";
 
-export default function Home() {
+export default function Notes() {
 
-  const colorLegend = ['pink', 'red', 'yellow', 'green','blue', 'purple']
   const [color, setColor] = useState(colorLegend[0]);
-  
 
+  //think about data here...
+  // [index {color: '' note: '' }]
   let hold = Array(daysInMonth).fill(null).map((_, i) => {
     let index = i % colorLegend.length;
     return {color: colorLegend[index]}
   })
 
   const [fauxSavedData, setData] = useState(hold);
-  console.log('saveddatd:', fauxSavedData, hold)
 
   const colorLock = (color) => {
     setColor(color);

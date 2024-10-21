@@ -61,6 +61,8 @@ user = {
 
     - sizing not dynamic. focusing mobile design
     - day/ month/year at a glance.
+    - consider database structure!!
+    - make a 'are you sure you want to delete' pop up
 
 # Future Dev 
 

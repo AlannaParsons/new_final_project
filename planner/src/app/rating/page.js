@@ -8,7 +8,7 @@ import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils"
 import { Button, SimpleGrid } from '@chakra-ui/react'
 import React, { useState } from "react";
 
-export default function Home() {
+export default function Rating() {
 //sets up faux saved data!!
   const colorLegend = ['pink', 'red', 'yellow', 'green','blue', 'purple']
   const [color, setColor] = useState(colorLegend[0]);

@@ -12,12 +12,12 @@ import {
   Input,
   UnorderedList,
   Spacer } from '@chakra-ui/react';
-  import { CloseIcon } from '@chakra-ui/icons'
+import { CloseIcon } from '@chakra-ui/icons'
 import { paletteData } from '../utils/mockData.js';
 import getRandomColor from '../utils/tempFunc.js';
 import React, { useState } from "react";
 
-export default function SettingsPage() {
+export default function Settings() {
   //set local state
   const [palette, setPalette] = useState(paletteData);
 
