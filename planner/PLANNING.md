@@ -59,11 +59,13 @@ user = {
 
 # Current
     - goals
+        - simple version in place. make page for goals that arent daily? bigger goal specific page?
     - notes
         - make more specific? could be used for memories, gratitude journal or classic calendar
     - rating
         - make more specific? could be used for weather, mood, or period tracker
     - settings
+
 
 # Next Steps
 
@@ -71,8 +73,10 @@ user = {
     - day/ month/year at a glance.
     - consider database structure!!
     - make a 'are you sure you want to delete' pop up
+    - year in pixels next (using rating data)
 
     more pages - 
+        week
         month 
         - reading
             - number of books read
@@ -83,7 +87,7 @@ user = {
         - bingo?
         - dreams
         - chore schedule
-        - progress tracker
+        - progress tracker - reading, water drinking, saving money?
         - doodles (outsource)
         year 
         - reading 

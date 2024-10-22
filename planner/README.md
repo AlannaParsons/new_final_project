@@ -1,5 +1,8 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+This is meant to act like a bullet journal. User can pull in template pages and customize them to their specific useage.
+Data is held and can be agigated with certain pages. 
+
 ## Getting Started
 
 First, run the development server:

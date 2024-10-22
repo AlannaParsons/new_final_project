@@ -3,4 +3,4 @@ const paletteData = [{color: '#016FB9', variable: 'something something'}];
 const moods = ['happy', 'good', 'okay', 'neutral', 'meh', 'moody', 'bad']
 const colorLegend = ['pink', 'red', 'yellow', 'green','blue', 'purple']
 
-export { paletteData, colorLegend };
+export { paletteData, colorLegend};
