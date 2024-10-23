@@ -1,6 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import { Box, Button, MenuItem, Stack } from '@chakra-ui/react'
+import { Header } from './components/Header'
+import { SubHeader } from './components/SubHeader'
 import { Providers } from './providers'
 
 const geistSans = localFont({
@@ -22,12 +24,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-
-        Date picker
-
-
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-      <Providers>{children}</Providers>
+
+
+
+        <Providers>
+          <Header></Header>
+          <SubHeader/>
+          {children}
+        </Providers>
       </body>
     </html>
   );
