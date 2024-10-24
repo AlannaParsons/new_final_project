@@ -2,7 +2,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { Box, Button, MenuItem, Stack } from '@chakra-ui/react'
 import { Header } from './components/Header'
-import { SubHeader } from './components/SubHeader'
 import { Providers } from './providers'
 
 const geistSans = localFont({
@@ -30,7 +29,6 @@ export default function RootLayout({ children }) {
 
         <Providers>
           <Header></Header>
-          <SubHeader/>
           {children}
         </Providers>
       </body>

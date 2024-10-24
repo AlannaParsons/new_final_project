@@ -29,12 +29,13 @@ import {
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { colorLegend } from '../utils/mockData.js';
+import { SubHeader } from '../components/SubHeader'
 import React, { useState, useRef } from "react";
 
 
 export default function Goals() {
 
-  const { onOpen, onClose, isOpen, onSub } = useDisclosure()
+  const { onOpen, onClose, isOpen } = useDisclosure()
 
   //data structure????
   const goalData = [{'title':'exercise','completion' : [true,false,true,false,null,true,false,true,false,null,true,false,true,false,null, 
@@ -46,6 +47,7 @@ export default function Goals() {
   //set local dtatee, currently faux data
   const [savedData, setData] = useState(goalData);
   const [editInput, setEdit] = useState({'title':'', 'index': null});
+  const [activeDate, setActiveDate] = useState(date);
 
   const goalAdd = () => {
     let hold = Array(daysInMonth).fill(null);
@@ -76,7 +78,7 @@ export default function Goals() {
   }
 
   const goalComplete = (goal, index) => {
-    let day = date.getDate() - 1 ;
+    let day = activeDate.getDate() - 1 ;
     let boolArr = [...goal.completion];
     boolArr[day] = true;
     let objArr = [...savedData];
@@ -93,6 +95,7 @@ export default function Goals() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <SubHeader activeDate={activeDate} setActiveDate= {setActiveDate}/>
 
         GOALS
         <Button onClick={goalAdd} height='20px'> + </Button>
@@ -130,7 +133,7 @@ export default function Goals() {
               onClose={onClose}
             >
               <ModalOverlay />
-            ` <ModalContent>
+              <ModalContent>
                 <ModalHeader>Edit Goal</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
@@ -144,13 +147,9 @@ export default function Goals() {
                     </Button>
                     <Button onClick={onClose}>Cancel</Button>
                   </Center>
-        
-                  
                 </ModalBody>
         
                 <ModalFooter>
-
-
                   <IconButton onClick={() => goalDel(goal, i)} icon={<DeleteIcon />} colorScheme='red' isRound={true} size='sm' margin='5px'></IconButton>
                 </ModalFooter>
               </ModalContent>`

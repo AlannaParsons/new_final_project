@@ -1,51 +1,39 @@
-//user can navigate journal pages and add new pages
-"use client"
-//can the tabs be veritcal?
-//should menu items be categories or individual pages???
-//willsubheader be pulling from db too much for user info? page reloads? or does next handle state and remount???
-import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils";
-import { Box,
+//access current date, change current date to edit old content? 
+// width of calendar pop up change
+// can change editing date locally, should not change edit date for other pages
+// what menu items are necessary>?
+//use calendar libraby elsewhere???
+
+import {
+  Button,
+  Flex,
+  HStack,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
-  Tabs, TabList, TabPanels, Tab, TabPanel, Button } from '@chakra-ui/react'
-import { fakeDBData, availablePages } from '../utils/mockData.js';
-import React, { useState, useRef } from "react";
+} from '@chakra-ui/react';
+import { ChevronDownIcon, SettingsIcon } from '@chakra-ui/icons';
+//https://www.npmjs.com/package/react-calendar
+import Calendar from 'react-calendar'
 
 export const SubHeader = (props) => {
-  const [userPages, setUserPages] = useState(fakeDBData);
-  //temporary addPage, will need to save to db
-  const addPage = (type) => {
-    let helper = [...userPages, {id: 2, type, user_id : 123, dataArray : [], month: 11, year: 2024 } ]
-    setUserPages(helper)
-  }
-  
+
   return ( 
-    <Box>
-      <Tabs isManual variant="enclosed" >
-        <TabList >
+    <Flex basis={'100%'} padding={'10px'} bgColor={"grey"} justifyContent={"space-between"}>
+      <HStack>
+        <Menu> 
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            {props.activeDate.toDateString()}
+          </MenuButton>
+          <MenuList>
+            <MenuItem ><Calendar onChange={props.setActiveDate} value={props.activeDate}/></MenuItem>
+          </MenuList>
+        </Menu>
+        
+      </HStack>
 
-          {userPages.map(function (object, i) {
-                      return <Tab key={i}> {object.type} </Tab>;
-                    })}
+    </Flex>
+  )
 
-          <Menu>
-            <MenuButton as={Button} >
-              +
-            </MenuButton>
-            <MenuList>
-              {availablePages.map(function (object, i) {
-                    return <MenuItem key={object.type} onClick={()=> addPage(object.type)}> {object.type} </MenuItem>;
-                  })}
-            </MenuList>
-          </Menu>
-
-        </TabList>
-      </Tabs>
-    </Box>
-)}
+}
