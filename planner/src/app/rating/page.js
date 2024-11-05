@@ -22,15 +22,15 @@ export default function Rating() {
     helper[index] = {...helper[index], color: color};
     setData(helper);
   };
-
+  
   return (
     <div className={styles.page}>
       <main className={styles.main}>
 
         LEGEND {firstDayOfMonth}
         <SimpleGrid columns={7} spacing={1}>
-            {colorLegend.map(color => {
-              return <Button key={color} colorScheme={color} height='10px' onClick={() => colorLock(color)} ></Button>
+            {colorLegend.map((color, i) => {
+              return <Button key={`${color}`} colorScheme={color} height='10px' onClick={() => colorLock(color)} ></Button>
 
             })}
         </SimpleGrid>
@@ -42,7 +42,7 @@ export default function Rating() {
           })}
 
           {savedData.map((date, i) => {
-            return <Button key={date} height='20px' colorScheme={date.color || 'gray'} onClick={() => colorPut(i) } >{i+1}</Button>
+            return <Button key={`${i} ${color}`} height='20px' colorScheme={date.color || 'gray'} onClick={() => colorPut(i) } >{i+1}</Button>
 
           })}
         </SimpleGrid>

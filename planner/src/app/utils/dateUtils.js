@@ -9,4 +9,4 @@ const dayOfWeek = date.getDay();
 const firstDayOfMonth = firstDay.getDay()+1 >= 6 ? 0 : firstDay.getDay()+1;
 //let currentDay = ();
 
-export {daysInMonth, dayOfWeek, date, firstDayOfMonth};
+export {daysInMonth, dayOfWeek, date, firstDayOfMonth, daysInMonthCalc};

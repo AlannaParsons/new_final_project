@@ -37,18 +37,14 @@ user can go to settings to add sections to journal. provide preview?
 
 # Data
 data to be stored locally. may integrate clouds backup in future to enable desktop use
-consider redesign. most templates can be reused in mulitple categories
-
-categories = {
-    id: string;
-    wellness:
-    fitness:
-    finance:
-    productivity:
-    books:
-    notes:
-    goals:
-  };
+consider redesign. most templates can be reused in mulitple categories. 
+redesign -  
+    rankingTable = { id: 0, fk_user_id: '', title: mood}
+        ranking: {date: date, rank setting idFK, ranking table FK} 
+        rankseting: {id, rank int, color:string, phrase:string, rankingtable FK}
+    notesTable = { id: 0, fk_user_id: '', date: date, note: string}
+    goalsTable = {id: 0, fk_user_id: '', type: string}
+        completion = {goaltype_id: fk individual goal, date: date }
 
 user = {
     id: string;
@@ -72,9 +68,7 @@ user = {
 
     - sizing not dynamic. focusing mobile design - go back to prev page, fix sizing ALL
     - day/ month/year at a glance.
-    - consider database structure!!
     - make a 'are you sure you want to delete' pop up
-    - year in pixels next (using rating data)
     - allow for different legend types
     - how to add new pages for user
 
@@ -104,15 +98,13 @@ user = {
         - general presentation. click into modal (or other)
             rating/trackers -> weather, period, mood (hover previews? necessary. allow for general customizeable)
             goals -> many, singular
-            notes -> memories, dreams, reg calendar?
+            notes -> memories, dreams, reg calendar? LENGTH MAX???
         - 
-    
-    data structure planning
-        each page has a table w user data points?
-        const fakeDBData = {'rankingTable': {id: 0, user_id : 123, dataArray : [], month: 11, year: 2024 }}
+        
 
 # For considereation
     - calendar component imported into header.... replace all other calendar uses??
+    -year in pixels should act as a sub type page of ranking, easier to organize, all pages could have their own aggrigate
 
 
 # Future Dev 

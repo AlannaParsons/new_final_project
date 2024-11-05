@@ -1,57 +1,53 @@
-//user will make small notes on each day
-//would like to auto orient to current day
 "use client"
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils"
-import {   
-  Input, 
-  InputGroup, 
-  InputLeftAddon,
-  VStack } from '@chakra-ui/react';
-import { colorLegend } from '../utils/mockData.js';
+import { Box, Button, SimpleGrid } from '@chakra-ui/react'
+import { daysInMonth } from '../components/functions'
 import React, { useState } from "react";
 
-export default function Notes() {
+export default function Home() {
+  const [value, setValue] = useState(0);
+  //pink, red, yellow, green, teal, blue
+  //const colorSet = [#ED12AB, f32c0c, edfd02, #49e619, #0FF0E8 451ce3]
 
-  const [color, setColor] = useState(colorLegend[0]);
+  const incriment = () => {
+    console.log(`Setting ${value}`);
 
-  //think about data here...
-  // [index {color: '' note: '' }]
-  let hold = Array(daysInMonth).fill(null).map((_, i) => {
-    let index = i % colorLegend.length;
-    return {color: colorLegend[index]}
-  })
-
-  const [fauxSavedData, setData] = useState(hold);
-
-  const colorLock = (color) => {
-    setColor(color);
-  };
-  const colorPut = (index) => {
-    let helper = [...fauxSavedData]
-    helper[index] = {...helper[index], color: color};
-    setData(helper);
+    setValue(value + 1);
   };
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
+        <Image
+          className={styles.logo}
+          src="https://nextjs.org/icons/next.svg"
+          alt="Next.js logo"
+          width={180}
+          height={38}
+          priority
+        />
+        <ol>
+          <li>
+            Get started by editing <code>src/app/page.js</code>.
+          </li>
+          <li>Save and see your changes instantly.</li>
+        </ol>
 
-        LIL NOTES
-        <VStack
-          spacing={3}
-          align='stretch'>
+        
+        <SimpleGrid columns={7} spacing={1}>
+        
+            <Button colorScheme='blue' height='10px'
+              onClick={incriment}
+            >
+            </Button>
 
-          {fauxSavedData.map((date, i) => {
-            return <InputGroup key={`${i}`} size='sm'>
-              <InputLeftAddon  w='40px' backgroundColor={date.color} justifyContent="center"> {i+1}</InputLeftAddon>
-              <Input paddingLeft={3} placeholder='...' variant='flushed' maxLength={5} />
-            </InputGroup>
-          })}
-            
-        </VStack>
+          <Box bg='tomato' height='10px'></Box>
+          <Box bg='tomato' height='10px'></Box>
+          <Box bg='tomato' height='10px'></Box>
+          <Box bg='tomato' height='10px'></Box>
+        </SimpleGrid>
 
         <div className={styles.ctas}>
           <a

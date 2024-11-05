@@ -53,6 +53,12 @@ export default function Settings() {
           </li>
         </ol>
 
+        
+
+
+
+
+
         <Button onClick={paletteAdd} height='20px'> + </Button>
 
         <UnorderedList> 

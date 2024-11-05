@@ -1,57 +1,104 @@
-//user will make small notes on each day
-//would like to auto orient to current day
+//set up to use ranking page
+// purely aggrigate no active edits??
+// 365 grid. drop down adds? best day of week on avg? best month?
+
 "use client"
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils"
-import {   
-  Input, 
-  InputGroup, 
-  InputLeftAddon,
-  VStack } from '@chakra-ui/react';
+import { daysInMonthCalc, firstDayOfMonth } from "../utils/dateUtils";
+import {
+  Box,
+  Button,
+  Flex,
+  FormControl,
+  Heading,
+  IconButton,
+  Input,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  SimpleGrid,
+  Spacer,
+  Center,
+  HStack,
+  VStack
+} from '@chakra-ui/react';
+import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { colorLegend } from '../utils/mockData.js';
-import React, { useState } from "react";
+import { SubHeader } from '../components/SubHeader'
+import React, { useState, useRef } from "react";
+import getRandomColor from '../utils/tempFunc.js';
+import Month from "react-calendar/dist/cjs/YearView/Month";
 
-export default function Notes() {
 
-  const [color, setColor] = useState(colorLegend[0]);
+export default function Goals() {
 
-  //think about data here...
-  // [index {color: '' note: '' }]
-  let hold = Array(daysInMonth).fill(null).map((_, i) => {
-    let index = i % colorLegend.length;
-    return {color: colorLegend[index]}
-  })
+  const { onOpen, onClose, isOpen } = useDisclosure()
 
-  const [fauxSavedData, setData] = useState(hold);
+  //const [savedData, setData] = useState(Array(daysInMonth).fill({ color: null }));
 
-  const colorLock = (color) => {
-    setColor(color);
-  };
-  const colorPut = (index) => {
-    let helper = [...fauxSavedData]
-    helper[index] = {...helper[index], color: color};
-    setData(helper);
-  };
+  const makeData = () => {
+    let data = []
+    for (let i=0; i<12; i++){
+      let daysInMonth = daysInMonthCalc("2024", i+1)
+      data[i] = []
+      for (let x=0; x<31; x++) {
+        let hold = getRandomColor()
+        data[i][x]  = hold;
+      }
+
+      //do something else. set same as background? also not account for feb
+      if (daysInMonth === 30) {
+
+        data[i][30] = null;
+      } 
+      
+      console.log('data',data)
+    }
+    return data
+
+  }
+  //data structure????
+  let data = makeData()
+  //set local dtatee, currently faux data
+  const [editInput, setEdit] = useState({'title':'', 'index': null});
+  //const [activeDate, setActiveDate] = useState(date);
+  //consider how i can structure from db, i like this best, but possible? 1 array 'easier'
+
+  const month = (array,i) => {
+    return <SimpleGrid key={`${i}`}>
+      {array.map((item, x) => {
+        
+
+        return <Box key={`${x}, ${item}`} backgroundColor={item}  > {x+1}</Box>
+
+      })}
+
+    </SimpleGrid>
+
+  }
+
 
   return (
     <div className={styles.page}>
       <main className={styles.main}>
 
-        LIL NOTES
-        <VStack
-          spacing={3}
-          align='stretch'>
+        LEGEND {firstDayOfMonth}
+        <SimpleGrid columns={12} gap='1'>
+            {data.map((array, i) => {
 
-          {fauxSavedData.map((date, i) => {
-            return <InputGroup key={`${i}`} size='sm'>
-              <InputLeftAddon  w='40px' backgroundColor={date.color} justifyContent="center"> {i+1}</InputLeftAddon>
-              <Input paddingLeft={3} placeholder='...' variant='flushed' maxLength={5} />
-            </InputGroup>
-          })}
-            
-        </VStack>
+              return month(array, i)
+
+            })}
+        </SimpleGrid>
+
+     
 
         <div className={styles.ctas}>
           <a

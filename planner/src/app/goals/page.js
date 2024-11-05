@@ -3,6 +3,7 @@
 //dates should not be "buttons". wanted continuity from other similar pages. must redesign later
 //you can edit a title, of a filled goal. not useful. way around? when created have popup??
 //move modale into component? ran into difficulties, we'll see
+
 "use client"
 
 import Image from "next/image";
