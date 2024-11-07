@@ -129,17 +129,17 @@ const goalData = [
     {
       id: '27e6f92f-23bb-49e0-87ec-796568eaef0e', 
       fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
-      type: 'exercise'
+      title: 'exercise'
     },
     {
       id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
       fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
-      type: 'read'
+      title: 'read'
     },
     {
       id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
-      type: 'dishes'
+      title: 'dishes'
     },
 
   ]

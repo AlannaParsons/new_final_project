@@ -53,6 +53,11 @@ user = {
     info under each template
 }
 
+limitations -
+    notes and goals cannot currently handle multiple pages?
+    ranking - # of ranks will be static after creation
+
+
 # Current
     - goals
         - simple version in place. make page for goals that arent daily? bigger goal specific page?

@@ -1,52 +1,50 @@
+//user can rate each day in month according to personalized legend
+//can be used for mood or weather rating etc....
 "use client"
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { Box, Button, SimpleGrid } from '@chakra-ui/react'
-import { daysInMonth } from '../components/functions'
+import { daysInMonth, date, firstDayOfMonth } from "../../utils/dateUtils"
+import { Button, SimpleGrid } from '@chakra-ui/react'
 import React, { useState } from "react";
 
-export default function Home() {
-  const [value, setValue] = useState(0);
-  //pink, red, yellow, green, teal, blue
-  //const colorSet = [#ED12AB, f32c0c, edfd02, #49e619, #0FF0E8 451ce3]
+export default function Rating() {
+//sets up faux saved data!!
+  const colorLegend = ['pink', 'red', 'yellow', 'green','blue', 'purple']
+  const [color, setColor] = useState(colorLegend[0]);
+  const [savedData, setData] = useState(Array(daysInMonth).fill({ color: null }));
 
-  const incriment = () => {
-    console.log(`Setting ${value}`);
-
-    setValue(value + 1);
+  const colorLock = (color) => {
+    setColor(color);
   };
-
+  const colorPut = (index) => {
+    let helper = [...savedData]
+    helper[index] = {...helper[index], color: color};
+    setData(helper);
+  };
+  
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+
+        LEGEND {firstDayOfMonth}
+        <SimpleGrid columns={7} spacing={1}>
+            {colorLegend.map((color, i) => {
+              return <Button key={`${color}`} colorScheme={color} height='10px' onClick={() => colorLock(color)} ></Button>
+
+            })}
+        </SimpleGrid>
 
         
         <SimpleGrid columns={7} spacing={1}>
-        
-            <Button colorScheme='blue' height='10px'
-              onClick={incriment}
-            >
-            </Button>
+          {[...Array(firstDayOfMonth)].map(function(object, i){
+            return <Button key={i} height='20px'/> ;
+          })}
 
-          <Box bg='tomato' height='10px'></Box>
-          <Box bg='tomato' height='10px'></Box>
-          <Box bg='tomato' height='10px'></Box>
-          <Box bg='tomato' height='10px'></Box>
+          {savedData.map((date, i) => {
+            return <Button key={`${i} ${color}`} height='20px' colorScheme={date.color || 'gray'} onClick={() => colorPut(i) } >{i+1}</Button>
+
+          })}
         </SimpleGrid>
 
         <div className={styles.ctas}>

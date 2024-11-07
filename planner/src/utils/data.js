@@ -2,7 +2,6 @@ import { sql } from '@vercel/postgres';
 import {
   User
 } from './dataStructure';
-// write dynamic 
 
 export async function fetchUsers() {
   // Add noStore() here to prevent the response from being cached.

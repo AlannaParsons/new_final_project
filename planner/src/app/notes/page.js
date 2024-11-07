@@ -4,36 +4,71 @@
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils"
+import { daysInMonth, date, firstDayOfMonth } from "../../utils/dateUtils.js"
 import {   
   Input, 
   InputGroup, 
   InputLeftAddon,
   VStack } from '@chakra-ui/react';
-import { colorLegend } from '../utils/mockData.js';
-import React, { useState } from "react";
+import { colorLegend } from '../../utils/mockData.js';
+import React, { useState, useEffect } from "react";
 
 export default function Notes() {
+  let user_id = 0;
+  //create empty data repo
+  let hold = Array(daysInMonth).fill(null).map((_, i) => {
+    let index = i % colorLegend.length;
+    return {color: colorLegend[index], note: null}
+  })
 
-  const [color, setColor] = useState(colorLegend[0]);
+  const [userData, setData] = useState(hold);
+  //should date be handled by front end? would allow user to go back to prev date easily?
+  //match year and month on back end. strip? ordering by date enough?
+
+  const getNotes = async (user_id, date) => {
+    try {
+      const res = await fetch(`/api/notes`,{
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      
+      if(res.ok){
+        let response = await res.json()
+        let temp = userData;
+
+        for (let noteItem of response){
+          let date = new Date(noteItem.date)
+          temp[date.getDate()].note = noteItem.note;
+        }
+        setData(temp);
+        
+        console.log("Yeai!",response)
+      }else{
+        console.log("Oops! Something is wrong.")
+      }
+    } catch (error) {
+        console.log(error)
+    }
+  }
+  //date.getDate()
 
   //think about data here...
   // [index {color: '' note: '' }]
-  let hold = Array(daysInMonth).fill(null).map((_, i) => {
-    let index = i % colorLegend.length;
-    return {color: colorLegend[index]}
-  })
 
-  const [fauxSavedData, setData] = useState(hold);
+  useEffect(() => {
 
-  const colorLock = (color) => {
-    setColor(color);
-  };
-  const colorPut = (index) => {
-    let helper = [...fauxSavedData]
-    helper[index] = {...helper[index], color: color};
-    setData(helper);
-  };
+    getNotes(user_id)
+
+  },[]);
+
+  const handleChange = () => {
+    console.log('handling change super well')
+  }
+
+  console.log('notes:',userData)
+
 
   return (
     <div className={styles.page}>
@@ -44,10 +79,10 @@ export default function Notes() {
           spacing={3}
           align='stretch'>
 
-          {fauxSavedData.map((date, i) => {
+          {userData.map((date, i) => {
             return <InputGroup key={`${i}`} size='sm'>
               <InputLeftAddon  w='40px' backgroundColor={date.color} justifyContent="center"> {i+1}</InputLeftAddon>
-              <Input paddingLeft={3} placeholder='...' variant='flushed' maxLength={5} />
+              <Input paddingLeft={3} placeholder={`${userData.note}`} onChange={() => handleChange()} variant='flushed' maxLength={5} />
             </InputGroup>
           })}
             
@@ -62,7 +97,7 @@ export default function Notes() {
           >
             <Image
               className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
+              // src="https://nextjs.org/icons/vercel.svg"
               alt="Vercel logomark"
               width={20}
               height={20}

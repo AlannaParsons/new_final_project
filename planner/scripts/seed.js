@@ -4,7 +4,7 @@ const {
   notes, 
   goals, goalCompletions,
   rankPage, rankingUnit, rankSettings
-} = require('../src/app/utils/seedData.js');
+} = require('../src/utils/seedData.js');
 const bcrypt = require('bcrypt');
 
 async function seedUsers(client) {
@@ -97,7 +97,7 @@ async function seedGoals(client) {
           constraint fk_user_goals
           foreign key (fk_user) 
           REFERENCES users(id),
-        type VARCHAR(255)
+        title VARCHAR(255)
       );
     `;
 
@@ -121,8 +121,8 @@ async function seedGoals(client) {
     const insertedGoals = await Promise.all(
       goals.map(async (goal) => {
         return client.sql`
-        INSERT INTO goals (id, fk_user, type)
-        VALUES (${goal.id}, ${goal.fk_user_id}, ${goal.type} )
+        INSERT INTO goals (id, fk_user, title)
+        VALUES (${goal.id}, ${goal.fk_user_id}, ${goal.title} )
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -159,7 +159,7 @@ async function seedRanking(client) {
   try {
     //await client.sql`DROP TABLE users`
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    //ranking will evetually use foreign key to individual ranking settings
+    //ranking is a ranking page. rename?
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ranking (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
