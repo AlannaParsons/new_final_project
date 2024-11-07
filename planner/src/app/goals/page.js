@@ -1,14 +1,20 @@
+//
 //user will make set of goals to be checked off each day
+//..................................................................................
+// notes:
 //check length of inputs. allow wrapping or sizing will be fd
 //dates should not be "buttons". wanted continuity from other similar pages. must redesign later
 //you can edit a title, of a filled goal. not useful. way around? when created have popup??
 //move modale into component? ran into difficulties, we'll see
+// bug w modal, focus issue
+// drop down color has awful sizing
+// fix hydration issues
 
 "use client"
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils";
+import { daysInMonth, date, firstDayOfMonth } from "../../utils/dateUtils.js";
 import {
   Button,
   Flex,
@@ -29,9 +35,9 @@ import {
   Center
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { colorLegend } from '../utils/mockData.js';
-import { SubHeader } from '../components/SubHeader'
-import React, { useState, useRef } from "react";
+import { colorLegend } from '../../utils/mockData.js';
+import { SubHeader } from '../../components/SubHeader.js'
+import React, { useState, useEffect } from "react";
 
 
 export default function Goals() {
@@ -39,39 +45,80 @@ export default function Goals() {
   const { onOpen, onClose, isOpen } = useDisclosure()
 
   //data structure????
-  const goalData = [{'title':'exercise','completion' : [true,false,true,false,null,true,false,true,false,null,true,false,true,false,null, 
-                                                        true,false,true,false,null,true,false,true,false,null,true,false,true,false,null]}, 
-                    {'title':'chores','completion' : [true,true,true,true,null,true,true,true,true,null,true,true,true,true,null, 
-                                                      true,true,true,true,null,true,true,true,true,null,true,true,true,true,null]}, 
-                    {'title':'reading','completion' : [false,false,false,true,null,false,false,false,true,null,false,false,false,true,null, 
-                                                      false,false,false,true,null,false,false,false,true,null,false,false,false,true,null]}]
-  //set local dtatee, currently faux data
-  const [savedData, setData] = useState(goalData);
+  //should only successful complettions save? probably. leave status property for clarity and error checking?
+  // const goalData = [{'title':'exercise','completion' : [true,false,true,false,null,true,false,true,false,null,true,false,true,false,null, 
+  //                                                       true,false,true,false,null,true,false,true,false,null,true,false,true,false,null]}, 
+  //                   {'title':'chores','completion' : [true,true,true,true,null,true,true,true,true,null,true,true,true,true,null, 
+  //                                                     true,true,true,true,null,true,true,true,true,null,true,true,true,true,null]}, 
+  //                   {'title':'meditate','completion' : [false,false,false,true,null,false,false,false,true,null,false,false,false,true,null, 
+  //                                                     false,false,false,true,null,false,false,false,true,null,false,false,false,true,null]}]
+
+  const [userData, setData] = useState([]);
   const [editInput, setEdit] = useState({'title':'', 'index': null});
   const [activeDate, setActiveDate] = useState(date);
+
+  const getGoals = async (user_id, date) => {
+    try {
+      const res = await fetch(`/api/goals`,{
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      
+      if(res.ok){
+        let response = await res.json()
+        let completionArr = Array(daysInMonth).fill(null);
+        let temp = [];
+        for (let goal of response.goallist) {
+          temp.push({'title': `${goal.title}`, 'completion': completionArr})
+          for (let day of goal.completion) {
+            let d = new Date(day.date);
+
+            //not necessary if not saving false status?
+            if (day.status) {
+              completionArr[d.getDate()] = true;
+            }
+          }
+        }
+        setData(temp);
+        
+        //console.log("Yeai!",response.goallist)
+      }else{
+        console.log("Oops! Something is wrong.")
+      }
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getGoals()
+  },[]);
 
   const goalAdd = () => {
     let hold = Array(daysInMonth).fill(null);
     setData(
-      [...savedData, 
+      [...userData, 
         {
-          'title':'goal',
+          'title': "title",
           'completion' : hold
         }
       ]
     );
+     true;
   }
 
   const goalDel = () => {
-    setData(savedData => {
-      return savedData.filter((item, i) => i !== editInput.index)
+    setData(userData => {
+      return userData.filter((item, i) => i !== editInput.index)
     })
 
     onClose()
   }
 
   const goalEdit = () => {
-    let objArr = [...savedData];
+    let objArr = [...userData];
     objArr[editInput.index].title = editInput.title;
 
     setData(objArr);
@@ -82,7 +129,7 @@ export default function Goals() {
     let day = activeDate.getDate() - 1 ;
     let boolArr = [...goal.completion];
     boolArr[day] = true;
-    let objArr = [...savedData];
+    let objArr = [...userData];
     objArr[index].completion = boolArr;
 
     setData(objArr);
@@ -103,7 +150,7 @@ export default function Goals() {
 
         <SimpleGrid columns={2} spacing={5}>
 
-          {savedData.map((goal, i) => {
+          {userData.map((goal, i) => {
             return <Flex key={`${goal.title}, ${i}`} direction='column'>
               <Heading >
               {goal.title}
