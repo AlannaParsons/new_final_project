@@ -29,7 +29,7 @@ export async function GET(req, res){
                                 'date', goalcompletion.date
                             ) goalcompletion
                         FROM goals
-                        JOIN goalcompletion ON goals.id = fk_goal 
+                        LEFT JOIN goalcompletion ON goals.id = fk_goal 
                         ) goalcompletion 
                     GROUP BY goalcompletion.id, goalcompletion.title
                     ) goalcompletion 
@@ -43,5 +43,59 @@ export async function GET(req, res){
     } finally {
         await client.end();
     }
+}
 
+export async function POST(req, res){
+    const data = await req.json();
+    // change how to store full name???
+    const fullName = `${data.ln}, ${data.fn}`
+    let createdId = null;
+
+    const client = await db.connect();
+    try {
+        
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+        createdId = await client.sql`
+        INSERT INTO accounts (name, email, password, address, phone_number, website)
+        VALUES (${fullName}, ${data.email}, ${hashedPassword},
+            ${data.address}, ${data.phone_number}, ${data.website})
+        RETURNING id;
+        `;
+        
+    } catch (error) {
+        console.error('Error inserting new account:', error);
+        return NextResponse.json({ message: 'Creation Error' }, { status: 400 })
+    } finally {
+        await client.end();
+    }
+
+    return NextResponse.json({ message: 'Account Created' }, { status: 201 })
+}
+
+export async function PATCH(req, { params }, res){
+  //const id = params.id;
+  let account;
+
+  const data = await req.json();
+  const client = await db.connect();
+
+  console.log('inside patch api:', data, params)
+
+  try {
+      
+      // account = await client.sql`
+      //     UPDATE accounts
+      //     SET name=${data.name}, phone_number=${data.phone_number}, 
+      //         email=${data.email}, address=${data.address}, website=${data.website}
+      //     WHERE id = ${id};
+      // `;
+      
+  } catch (error) {
+      console.error('Error updating account:', error);
+      return NextResponse.json({ message: 'Patch Error' }, { status: 400 })
+  } finally {
+      await client.end();
+  }
+
+  return NextResponse.json({ message: 'Account Updated' }, { status: 201 })
 }

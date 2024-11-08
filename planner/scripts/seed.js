@@ -1,8 +1,10 @@
+// ranking allows for multiple ranking pages. redesign to allow for goals and 
+// notes as well. will necessitate vast renaming of db
 const { db } = require('@vercel/postgres');
 const {
   users, 
   notes, 
-  goals, goalCompletions,
+  goalsPages, goals, goalCompletions,
   rankPage, rankingUnit, rankSettings
 } = require('../src/utils/seedData.js');
 const bcrypt = require('bcrypt');
@@ -90,13 +92,25 @@ async function seedNotes(client) {
 async function seedGoals(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    const createGoalsPages = await client.sql`
+    CREATE TABLE IF NOT EXISTS goalsPages (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      fk_user UUID DEFAULT uuid_generate_v4(), 
+        constraint fk_user_goalsPG
+        foreign key (fk_user) 
+        REFERENCES users(id)
+    );
+  `;
+
+  console.log(`Created "goal completion" table`);
+
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS goals (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        fk_user UUID DEFAULT uuid_generate_v4(), 
-          constraint fk_user_goals
-          foreign key (fk_user) 
-          REFERENCES users(id),
+        fk_goal_pg UUID DEFAULT uuid_generate_v4(), 
+          constraint fk_goals_goalPG
+          foreign key (fk_goal_pg) 
+          REFERENCES goalsPages(id),
         title VARCHAR(255)
       );
     `;
@@ -117,12 +131,25 @@ async function seedGoals(client) {
 
     console.log(`Created "goal completion" table`);
 
+    // Insert data into the "goalsPages" table
+    const insertedGoalsPages = await Promise.all(
+      goalsPages.map(async (goalPage) => {
+        return client.sql`
+        INSERT INTO goalsPages (id, fk_user)
+        VALUES (${goalPage.id}, ${goalPage.fk_user})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedGoalsPages.length} goals pages`);
+
     // Insert data into the "goals" table
     const insertedGoals = await Promise.all(
       goals.map(async (goal) => {
         return client.sql`
-        INSERT INTO goals (id, fk_user, title)
-        VALUES (${goal.id}, ${goal.fk_user_id}, ${goal.title} )
+        INSERT INTO goals (id, fk_goal_pg, title)
+        VALUES (${goal.id}, ${goal.fk_goal_pg}, ${goal.title} )
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
@@ -144,8 +171,10 @@ async function seedGoals(client) {
     console.log(`Seeded ${insertedGoalStatus.length} goal completion`);
 
     return {
+      createGoalsPages,
       createTable,
       createSubTable,
+      savedGoalsPages: insertedGoalsPages,
       savedGoals: insertedGoals,
       savedGoalStatus: insertedGoalStatus
     };

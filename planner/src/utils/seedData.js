@@ -125,20 +125,28 @@ const goalData = [
     }
   ]
 
+  goalsPages = [
+    { 
+      id: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d',
+      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+    }
+
+  ]
+
   goals = [
     {
       id: '27e6f92f-23bb-49e0-87ec-796568eaef0e', 
-      fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+      fk_goal_pg: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d', 
       title: 'exercise'
     },
     {
       id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
-      fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+      fk_goal_pg: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d', 
       title: 'read'
     },
     {
       id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
-      fk_user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+      fk_goal_pg: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d', 
       title: 'dishes'
     },
 
@@ -317,5 +325,5 @@ const fakeDBData = [
 ]
 
 module.exports = {
-  users, notes, goals, goalCompletions, rankPage, rankingUnit, rankSettings
+  users, notes, goalsPages, goals, goalCompletions, rankPage, rankingUnit, rankSettings
 };

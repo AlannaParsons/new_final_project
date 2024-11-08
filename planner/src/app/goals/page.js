@@ -9,6 +9,7 @@
 // bug w modal, focus issue
 // drop down color has awful sizing
 // fix hydration issues
+// check data, problem loading in completion data? or api issue?
 
 "use client"
 
@@ -43,6 +44,7 @@ import React, { useState, useEffect } from "react";
 export default function Goals() {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
+  const fauxUser = '3958dc9e-712f-4377-85e9-fec4b6a6442a'
 
   //data structure????
   //should only successful complettions save? probably. leave status property for clarity and error checking?
@@ -57,7 +59,7 @@ export default function Goals() {
   const [editInput, setEdit] = useState({'title':'', 'index': null});
   const [activeDate, setActiveDate] = useState(date);
 
-  const getGoals = async (user_id, date) => {
+  const getGoals = async (userID, date) => {
     try {
       const res = await fetch(`/api/goals`,{
         method: 'GET',
@@ -84,6 +86,28 @@ export default function Goals() {
         setData(temp);
         
         //console.log("Yeai!",response.goallist)
+      }else{
+        console.log("Oops! Something is wrong.")
+      }
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+
+  const patchGoal = async (userID) => {
+    try {
+      const res = await fetch(`/api/goals`,{
+        method: 'PATCH',
+        body: JSON.stringify({id: userID, data: userData}),
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      
+      if(res.ok){
+        let response = await res.json()
+        console.log("Yeai!",response)
       }else{
         console.log("Oops! Something is wrong.")
       }
@@ -152,15 +176,16 @@ export default function Goals() {
 
           {userData.map((goal, i) => {
             return <Flex key={`${goal.title}, ${i}`} direction='column'>
-              <Heading >
-              {goal.title}
-              <IconButton onClick={() => goalComplete(goal, i)} icon={<CheckIcon />} isRound={true} size='xs' margin='5px'></IconButton>
-              
-              <IconButton onClick={() => editModal(goal, i)} icon={<EditIcon />} isRound={true} size='xs' margin='5px'></IconButton>
-              
+              <Heading>
+                {goal.title}
+                <IconButton onClick={() => goalComplete(goal, i)} icon={<CheckIcon />} isRound={true} size='xs' margin='5px'></IconButton>
+                
+                <IconButton onClick={() => editModal(goal, i)} icon={<EditIcon />} isRound={true} size='xs' margin='5px'></IconButton>
+                
               </Heading>
+
               <SimpleGrid columns={7} spacing={1}>
-              
+    
                 {[...Array(firstDayOfMonth)].map(function (object, i) {
                   return <Button key={i} size='xs' height='20px' />;
                 })}
@@ -174,63 +199,49 @@ export default function Goals() {
                   }
                   return <Button key={`${i} + ${goal.title} + ${completed}`} size='xs' height='20px' colorScheme={ colorSet } >{i + 1}</Button>
                 })}
-            </SimpleGrid>
+              </SimpleGrid>
 
-            <Modal
-              isOpen={isOpen}
-              onClose={onClose}
-            >
-              <ModalOverlay />
-              <ModalContent>
-                <ModalHeader>Edit Goal</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody pb={6}>
-                  <FormControl>
-                    <Input id="userInput" onChange={(e) => setEdit({'title': e.target.value, 'index': editInput.index})} icon={<DeleteIcon />} placeholder={editInput.title} />
-                  </FormControl>
-                  <Spacer/>
-                  <Center margin='20px' >
-                    <Button onClick={() => goalEdit()} colorScheme='blue' mr={3}>
-                      Save
-                    </Button>
-                    <Button onClick={onClose}>Cancel</Button>
-                  </Center>
-                </ModalBody>
-        
-                <ModalFooter>
-                  <IconButton onClick={() => goalDel(goal, i)} icon={<DeleteIcon />} colorScheme='red' isRound={true} size='sm' margin='5px'></IconButton>
-                </ModalFooter>
-              </ModalContent>`
-            </Modal>
+              <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Edit Goal</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody pb={6}>
+                    <FormControl>
+                      <Input id="userInput" onChange={(e) => setEdit({'title': e.target.value, 'index': editInput.index})} icon={<DeleteIcon />} placeholder={editInput.title} />
+                    </FormControl>
+                    <Spacer/>
+                    <Center margin='20px' >
+                      <Button onClick={() => goalEdit()} colorScheme='blue' mr={3}>
+                        Save
+                      </Button>
+                      <Button onClick={onClose}>Cancel</Button>
+                    </Center>
+                  </ModalBody>
+          
+                  <ModalFooter>
+                    <IconButton onClick={() => goalDel(goal, i)} icon={<DeleteIcon />} colorScheme='red' isRound={true} size='sm' margin='5px'></IconButton>
+                  </ModalFooter>
+                </ModalContent>`
+              </Modal>
             </Flex>
           })}
         </SimpleGrid>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+        <Button onClick={() => patchGoal(fauxUser)}>
+          <Image
+            className={styles.logo}
+            src="https://nextjs.org/icons/vercel.svg"
+            alt="Vercel logomark"
+            width={20}
+            height={20}
+          />
+          Save
+        </Button>
+
       </main>
       <footer className={styles.footer}>
         <a

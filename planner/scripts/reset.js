@@ -5,6 +5,7 @@ async function main() {
     const client = await db.connect();
     await client.sql`DROP TABLE IF EXISTS users CASCADE;`
     await client.sql`DROP TABLE IF EXISTS notes CASCADE;`
+    await client.sql`DROP TABLE IF EXISTS goalsPages CASCADE;`
     await client.sql`DROP TABLE IF EXISTS goals CASCADE;`
     await client.sql`DROP TABLE IF EXISTS goalCompletions CASCADE;`
     await client.sql`DROP TABLE IF EXISTS ranking CASCADE;`
