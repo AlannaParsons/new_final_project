@@ -27,7 +27,7 @@ export const SubHeader = (props) => {
             {props.activeDate.toDateString()}
           </MenuButton>
           <MenuList>
-            <MenuItem ><Calendar onChange={props.setActiveDate} value={props.activeDate}/></MenuItem>
+            <Calendar onChange={props.setActiveDate} value={props.activeDate}/>
           </MenuList>
         </Menu>
         
