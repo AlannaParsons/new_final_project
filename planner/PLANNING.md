@@ -45,6 +45,7 @@ redesign -
     notesTable = { id: 0, fk_user_id: '', date: date, note: string}
     goalsTable = {id: 0, fk_user_id: '', type: string}
         completion = {goaltype_id: fk individual goal, date: date }
+        // may or may not include "status" attribute
 
 user = {
     id: string;
@@ -61,6 +62,8 @@ limitations -
 # Current
     - goals
         - simple version in place. make page for goals that arent daily? bigger goal specific page?
+        - can change day of month to set past dates (deny access to change future dates?)
+            -cannot currently change months to see old results
     - notes
         - make more specific? could be used for memories, gratitude journal or classic calendar
     - rating
