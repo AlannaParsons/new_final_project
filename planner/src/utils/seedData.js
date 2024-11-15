@@ -155,62 +155,52 @@ const goalData = [
   goalCompletions = [
     //dishes
     {
-      id: 0,
       goaltype_id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       date: '2024-11-08',
       status: true
     },
     {
-      id: 1,
       goaltype_id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       date: '2024-11-09',
       status: true
     },
     {
-      id: 2,
       goaltype_id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       date: '2024-11-10',
       status: false
     },
     {
-      id: 3,
       goaltype_id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       date: '2024-11-11',
       status: false
     },
     {
-      id: 4,
       goaltype_id: 'cef93b6c-8770-42f6-912c-bf34e7143c7a', 
       date: '2024-11-12',
       status: true
     },
     //read
     {
-      id: 5,
       goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
       date: '2024-11-08',
       status: true
     },
     {
-      id: 6,
       goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
       date: '2024-11-09',
+      status: false
+    },
+    {
+      goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
+      date: '2024-11-10',
       status: true
     },
     {
-      id: 7,
-      goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
-      date: '2024-11-10',
-      status: false
-    },
-    {
-      id: 8,
       goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
       date: '2024-11-11',
-      status: false
+      status: true
     },
     {
-      id: 9,
       goaltype_id: 'e6631609-cec6-4967-9f9f-dcfa04e6e312', 
       date: '2024-11-12',
       status: true

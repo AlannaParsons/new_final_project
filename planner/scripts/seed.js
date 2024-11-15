@@ -124,8 +124,7 @@ async function seedGoals(client) {
           constraint fk_goals_completed
           foreign key (fk_goal) 
           REFERENCES goals(id),
-        date DATE,
-        status BOOL
+        date DATE
       );
     `;
 
@@ -161,8 +160,8 @@ async function seedGoals(client) {
     const insertedGoalStatus = await Promise.all(
       goalCompletions.map(async (completed) => {
         return client.sql`
-        INSERT INTO goalCompletion (id, fk_goal, date, status)
-        VALUES (${completed.id}, ${completed.goaltype_id}, ${completed.date}, ${completed.status} )
+        INSERT INTO goalCompletion (fk_goal, date)
+        VALUES (${completed.goaltype_id}, ${completed.date} )
         ON CONFLICT (id) DO NOTHING;
       `;
       }),

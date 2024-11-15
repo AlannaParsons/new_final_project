@@ -7,7 +7,7 @@ async function main() {
     await client.sql`DROP TABLE IF EXISTS notes CASCADE;`
     await client.sql`DROP TABLE IF EXISTS goalsPages CASCADE;`
     await client.sql`DROP TABLE IF EXISTS goals CASCADE;`
-    await client.sql`DROP TABLE IF EXISTS goalCompletions CASCADE;`
+    await client.sql`DROP TABLE IF EXISTS goalCompletion CASCADE;`
     await client.sql`DROP TABLE IF EXISTS ranking CASCADE;`
     await client.sql`DROP TABLE IF EXISTS rankSettings CASCADE;`
     await client.sql`DROP TABLE IF EXISTS ranks CASCADE;`
