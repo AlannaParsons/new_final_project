@@ -8,5 +8,15 @@ const daysInMonth = daysInMonthCalc(date.getFullYear(), date.getMonth()+1)
 const dayOfWeek = date.getDay();
 const firstDayOfMonth = firstDay.getDay()+1 >= 6 ? 0 : firstDay.getDay()+1;
 //let currentDay = ();
+const getFirstDayOfMonth = (activeDate) => {
+  const firstDay = new Date(activeDate.getFullYear(), activeDate.getMonth(),'01');
+  const firstDayOfMonth = firstDay.getDay();
+  return firstDayOfMonth
+}
 
-export {daysInMonth, dayOfWeek, date, firstDayOfMonth, daysInMonthCalc};
+const getDaysInMonth = (activeDate) => {
+  const daysInMonth = daysInMonthCalc(activeDate.getFullYear(), activeDate.getMonth()+1)
+  return daysInMonth
+}
+
+export {daysInMonth, dayOfWeek, date, firstDayOfMonth, daysInMonthCalc, getFirstDayOfMonth, getDaysInMonth};
