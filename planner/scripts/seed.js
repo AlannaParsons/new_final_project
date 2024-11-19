@@ -51,61 +51,66 @@ async function seedUsers(client) {
 async function seedNotes(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createNotesPages = await client.sql`
-    CREATE TABLE IF NOT EXISTS notesPages (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      fk_user UUID DEFAULT uuid_generate_v4(), 
-        constraint fk_user_goalsPG
-        foreign key (fk_user) 
-        REFERENCES users(id)
-    );
-  `;
-  
-  console.log(`Created "notesPages" table`);
+    const createNotesPagesTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS notesPages (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        fk_user UUID DEFAULT uuid_generate_v4(), 
+          constraint fk_user_notesPG
+          foreign key (fk_user) 
+          REFERENCES users(id)
+      );
+    `;
+    console.log(`Created "notesPages" table`);
+//   fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
+//   constraint fk_page_unit
+//   foreign key (fk_rank_pg) 
+//   REFERENCES rankPages(id),
+// fk_status UUID DEFAULT uuid_generate_v4(), 
+//   constraint fk_rank_setting
+//   foreign key (fk_status) 
+//   REFERENCES rankSettings(id),
 
-  await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   //note may be resricted <255
-  const createTable = await client.sql`
+  const createNotesTable = await client.sql`
     CREATE TABLE IF NOT EXISTS notes (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       fk_note_pg UUID DEFAULT uuid_generate_v4(), 
-        constraint fk_notes_on_pg
+        constraint fk_notes_notesPG
         foreign key (fk_note_pg) 
         REFERENCES notesPages(id),
       date DATE,
       note VARCHAR(255)
     );
-  `;
-
+    `;
     console.log(`Created "notes" table`);
 
     // Insert data into the "notesPages" table
     const insertedNotesPages = await Promise.all(
-      notes.map(async (notePg) => {
+      notesPages.map(async (notePg) => {
         return client.sql`
         INSERT INTO notesPages (id, fk_user)
         VALUES (${notePg.id}, ${notePg.fk_user} )
-        ON CONFLICT (id) DO NOTHING;
+        ;
       `;
       }),
     );
-    console.log(`Seeded ${insertedNotesPages.length} notes`);
+    console.log(`Seeded ${insertedNotesPages.length} notes pages`);
 
     // Insert data into the "notes" table
     const insertedNotes = await Promise.all(
       notes.map(async (note) => {
         return client.sql`
         INSERT INTO notes (id, fk_note_pg, date, note)
-        VALUES (${note.id}, ${note.fk_note_pg}, ${note.date}, ${note.note} )
-        ON CONFLICT (id) DO NOTHING;
+        VALUES (${note.id}, ${note.fk_note_page}, ${note.date}, ${note.note} )
+        ;
       `;
       }),
     );
-
     console.log(`Seeded ${insertedNotes.length} notes`);
 
     return {
-      createTable,
+      createNotesTable,
+      createNotesPagesTable,
       savedNotesPage: insertedNotesPages,
       savedNotes: insertedNotes,
     };
@@ -118,7 +123,7 @@ async function seedNotes(client) {
 async function seedGoals(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createGoalsPages = await client.sql`
+    const createGoalsPagesTable = await client.sql`
     CREATE TABLE IF NOT EXISTS goalsPages (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       fk_user UUID DEFAULT uuid_generate_v4(), 
@@ -126,11 +131,11 @@ async function seedGoals(client) {
         foreign key (fk_user) 
         REFERENCES users(id)
     );
-  `;
+    `;
 
-  console.log(`Created "goal completion" table`);
+    console.log(`Created "goals pages" table`);
 
-    const createTable = await client.sql`
+    const createGoalsTable = await client.sql`
       CREATE TABLE IF NOT EXISTS goals (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         fk_goal_pg UUID DEFAULT uuid_generate_v4(), 
@@ -143,7 +148,7 @@ async function seedGoals(client) {
 
     console.log(`Created "goals" table`);
 
-    const createSubTable = await client.sql`
+    const createCompletionTable = await client.sql`
       CREATE TABLE IF NOT EXISTS goalCompletion (
         id SERIAL PRIMARY KEY,
         fk_goal UUID DEFAULT uuid_generate_v4(), 
@@ -196,9 +201,9 @@ async function seedGoals(client) {
     console.log(`Seeded ${insertedGoalStatus.length} goal completion`);
 
     return {
-      createGoalsPages,
-      createTable,
-      createSubTable,
+      createGoalsPagesTable,
+      createGoalsTable,
+      createCompletionTable,
       savedGoalsPages: insertedGoalsPages,
       savedGoals: insertedGoals,
       savedGoalStatus: insertedGoalStatus
@@ -214,7 +219,7 @@ async function seedRanking(client) {
     //await client.sql`DROP TABLE users`
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     //ranking is a ranking page. rename?
-    const createTable = await client.sql`
+    const createRankPageTable = await client.sql`
       CREATE TABLE IF NOT EXISTS rankPages (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         fk_user UUID DEFAULT uuid_generate_v4(), 
@@ -238,7 +243,7 @@ async function seedRanking(client) {
 
     console.log(`Created "rank settings" table`);
 
-    const createSubTable = await client.sql`
+    const createRanksTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ranks (
         id SERIAL PRIMARY KEY,
         fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
@@ -296,9 +301,9 @@ async function seedRanking(client) {
     console.log(`Seeded ${insertedRanks.length} ranks`);
 
     return {
-      createTable,
+      createRankPageTable,
       createSettingsTable,
-      createSubTable,
+      createRanksTable,
       savedRankPage: insertedRankPage,
       savedRankSettings: insertedRankSettings,
       savedRanks: insertedRanks,
