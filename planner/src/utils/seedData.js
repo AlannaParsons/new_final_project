@@ -15,111 +15,40 @@ const users = [
     password: '123'
   },
 ]; 
-//obj can attatch mor info if needed?
-const rankingData = [
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: 'pink'},
-  {color: 'red'},
-  {color: 'yellow'},
-  {color: 'green'},
-  {color: 'purple'},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null},
-  {color: null}
-]
-
-const notesData = [
-  {note: null, color: 'pink'},
-  {note: null, color: 'red'},
-  {note: null, color: 'yellow'},
-  {note: null, color: 'green'},
-  {note: null, color: 'blue'},
-  {note: null, color: 'purple'},
-  {note: null, color: 'pink'},
-  {note: null, color: 'red'},
-  {note: null, color: 'yellow'},
-  {note: null, color: 'green'},
-  {note: null, color: 'blue'},
-  {note: null, color: 'purple'},
-  {note: null, color: 'pink'},
-  {note: null, color: 'red'},
-  {note: null, color: 'yellow'},
-  {note: null, color: 'green'},
-  {note: null, color: 'blue'},
-  {note: null, color: 'purple'},
-  {note: null, color: 'pink'},
-  {note: null, color: 'red'},
-  {note: null, color: 'yellow'},
-  {note: null, color: 'green'},
-  {note: null, color: 'blue'},
-  {note: null, color: 'purple'},
-  {note: null, color: 'pink'},
-  {note: null, color: 'red'},
-  {note: null, color: 'yellow'},
-  {note: null, color: 'green'},
-  {note: null, color: 'blue'},
-  {note: null, color: 'purple'}
-]
-
-const goalData = [
-  {'title':'exercise',
-    'completion' : [true,false,true,false,null,true,false,true,false,null,true,false,true,false,null, 
-                  true,false,true,false,null,true,false,true,false,null,true,false,true,false,null]}, 
-  {'title':'chores',
-    'completion' : [true,true,true,true,null,true,true,true,true,null,true,true,true,true,null, 
-                    true,true,true,true,null,true,true,true,true,null,true,true,true,true,null]}, 
-  {'title':'reading',
-    'completion' : [false,false,false,true,null,false,false,false,true,null,false,false,false,true,null, 
-                    false,false,false,true,null,false,false,false,true,null,false,false,false,true,null]}]
 
   // rankingTable = { id: 0, fk_user_id: '', date: date, ranking: fk to settings or color string }
   // notesTable = { id: 0, fk_user_id: '', date: date, note: string}
   // goalsTable = {id: 0, fk_user_id: '', type: string}
   //     completion = {goaltype_id: fk individual goal, date: date }
+  notesPages = [
+    { 
+      id: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
+      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+    }
 
+  ]
   notes = [
     {
       id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      fk_note_page: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
       date: '2024-11-08',
       note: 'this thing happened'
     },
     {
       id: '364a218d-36b9-443e-bce1-27f44ba8a861',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      fk_note_page: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
       date: '2024-11-09',
       note: 'and then this'
     },
     {
       id: 'd6ad35e4-eff8-4f7b-831b-60539940f33c',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      fk_note_page: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
       date: '2024-11-10',
       note: 'somethign else'
     },
     {
       id: '0b05515a-0b8e-4944-99df-24c997eb3415',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      fk_note_page: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
       date: '2024-11-11',
       note: 'a 4th thing'
     }
@@ -208,7 +137,7 @@ const goalData = [
 
   ]
 
-  rankPage= [
+  rankPages= [
     {
       id: '6a54003e-8260-4245-b073-221ca81f6c66',
       user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
@@ -315,5 +244,8 @@ const fakeDBData = [
 ]
 
 module.exports = {
-  users, notes, goalsPages, goals, goalCompletions, rankPage, rankingUnit, rankSettings
+  users, 
+  notesPages, notes, 
+  goalsPages, goals, goalCompletions, 
+  rankPages, rankingUnit, rankSettings
 };
