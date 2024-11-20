@@ -1,101 +1,60 @@
-// GET Goals
-// will need to sort by date and user id at some point, but this is enough for testing
+// Goals Routes
+// user to interact w goals table
 import { NextResponse } from "next/server";
 const { db } = require('@vercel/postgres');
 const bcrypt = require('bcrypt');
 
-export async function GET(req, res){
-    let goals;
-
-    const client = await db.connect();
-    try {
-
-        //using json to aggrigate data
-        //https://stackoverflow.com/questions/38458318/returning-postgres-nested-json-array
-        
-        goals = await client.sql`
-            SELECT jsonb_agg(js_object) goalList
-                FROM ( 
-                    SELECT
-                        jsonb_build_object(
-                            'title', title,
-                            'completion', jsonb_agg(goalcompletion)
-                        ) js_object
-                    FROM ( 
-                        SELECT
-                            goals.*,
-                            jsonb_build_object(
-                                'status', goalcompletion.status,
-                                'date', goalcompletion.date
-                            ) goalcompletion
-                        FROM goals
-                        LEFT JOIN goalcompletion ON goals.id = fk_goal 
-                        ) goalcompletion 
-                    GROUP BY goalcompletion.id, goalcompletion.title
-                    ) goalcompletion 
-        `
-
-        return NextResponse.json( goals.rows[0], { status: 201 })
-        
-    } catch (error) {
-        console.error('Goal not found:', error);
-        return NextResponse.json({ message: 'Error' }, { status: 400 })
-    } finally {
-        await client.end();
-    }
-}
-
+//add new goal to user
+//not done at all
 export async function POST(req, res){
-    const data = await req.json();
-    // change how to store full name???
-    const fullName = `${data.ln}, ${data.fn}`
-    let createdId = null;
 
-    const client = await db.connect();
-    try {
-        
-        const hashedPassword = await bcrypt.hash(data.password, 10);
-        createdId = await client.sql`
-        INSERT INTO accounts (name, email, password, address, phone_number, website)
-        VALUES (${fullName}, ${data.email}, ${hashedPassword},
-            ${data.address}, ${data.phone_number}, ${data.website})
-        RETURNING id;
-        `;
-        
-    } catch (error) {
-        console.error('Error inserting new account:', error);
-        return NextResponse.json({ message: 'Creation Error' }, { status: 400 })
-    } finally {
-        await client.end();
-    }
-
-    return NextResponse.json({ message: 'Account Created' }, { status: 201 })
-}
-
-export async function PATCH(req, { params }, res){
-  //const id = params.id;
-  let account;
-
-  const data = await req.json();
+  //could be set here instead of sent? acts as placeholder anyways
+  const {id, title} = await req.json();
   const client = await db.connect();
-
-  console.log('inside patch api:', data, params)
+  let createdId;
 
   try {
       
-      // account = await client.sql`
-      //     UPDATE accounts
-      //     SET name=${data.name}, phone_number=${data.phone_number}, 
-      //         email=${data.email}, address=${data.address}, website=${data.website}
-      //     WHERE id = ${id};
-      // `;
+    createdId = await client.sql`
+    INSERT INTO goals (fk_goal_pg, title)
+    VALUES (${id}, ${title})
+    RETURNING id;
+    `;
       
   } catch (error) {
-      console.error('Error updating account:', error);
+      console.error('Error updating goal completion:', error);
+      return NextResponse.json({ message: 'Post Error' }, { status: 400 })
+  } finally {
+      await client.end();
+  }
+
+  return NextResponse.json({ message: createdId }, { status: 201 })
+}
+
+//patching title in goals table
+//should i impliment deterministic patching???? patching title or completion array
+//no return necessary?
+export async function PATCH(req, res){
+  //const id = params.id; title completion array?
+
+  const {id, title} = await req.json();
+  const client = await db.connect();
+  let goal;
+
+  try {
+    goal = await client.sql`
+          UPDATE goals
+          SET title=${title}
+          WHERE id = ${id}
+          RETURNING id;
+      `;
+      
+  } catch (error) {
+      console.error('Error updating goal:', error);
       return NextResponse.json({ message: 'Patch Error' }, { status: 400 })
   } finally {
       await client.end();
   }
 
-  return NextResponse.json({ message: 'Account Updated' }, { status: 201 })
+  return NextResponse.json({ message: goal }, { status: 201 })
 }

@@ -6,7 +6,17 @@ const bcrypt = require('bcrypt');
 
 export async function GET(req, {params}, res){
     let goals;
-    let month = new Date(params.date).getMonth() + 1;
+    let month = 11;
+    //get user iD!!! OR GOAL PAGE ID
+    if (req.nextUrl.searchParams) {
+        console.log('back end check', req.nextUrl.searchParams.activeDate)
+        console.log('back end check', req.nextUrl.searchParams);
+        let month = new Date(req.nextUrl.searchParams.activeDate).getMonth() + 1;
+    }
+    //
+    let id = params.id; //'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
+
+
 
     const client = await db.connect();
     try {
@@ -19,6 +29,8 @@ export async function GET(req, {params}, res){
                 FROM ( 
                     SELECT
                         jsonb_build_object(
+                            'id', id,
+                            'fk_goal_pg', fk_goal_pg,
                             'title', title,
                             'completion', jsonb_agg(goalcompletion)
                         ) js_object
@@ -29,9 +41,11 @@ export async function GET(req, {params}, res){
                                 'date', goalcompletion.date
                             ) goalcompletion
                         FROM goals
-                        LEFT JOIN goalcompletion ON goals.id = fk_goal AND EXTRACT(MONTH FROM goalcompletion.date) = ${month}
+                        LEFT JOIN goalcompletion ON goals.id = fk_goal 
+                        AND fk_goal_pg = ${id}
+                        AND EXTRACT(MONTH FROM goalcompletion.date) = ${month}
                         ) goalcompletion 
-                    GROUP BY goalcompletion.id, goalcompletion.title
+                    GROUP BY goalcompletion.id, goalcompletion.title, goalcompletion.fk_goal_pg
                     ) goalcompletion 
         `
 
