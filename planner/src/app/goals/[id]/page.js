@@ -19,8 +19,8 @@
 "use client"
 
 import Image from "next/image";
-import styles from "../../page.module.css";
-import { daysInMonth, firstDayOfMonth, getFirstDayOfMonth, getDaysInMonth } from "../../../utils/dateUtils.js";
+import styles from "@/app/page.module.css";
+import { daysInMonth, firstDayOfMonth, getFirstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils.js";
 import {
   Button,
   Flex,
@@ -40,28 +40,21 @@ import {
   Spacer,
   Center
 } from '@chakra-ui/react';
-import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { colorLegend } from '../../../utils/mockData.js';
-import { SubHeader } from '../../../components/SubHeader.js';
+import { CheckIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { colorLegend } from '@/utils/mockData.js';
+import { SubHeader } from '@/components/SubHeader';
 import React, { useState, useEffect } from "react";
-import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Suspense } from 'react';
 
 
 export default function Goals() {
-  const router = useRouter();
-  //const id = router;
-  const params = useParams();
-  
-  const searchParams = useSearchParams();
- 
-  const search = searchParams.getAll('id')
-  //const search = searchParams.get('id')
-  console.log('pulled from url:', search, params)
+
+  const {id} = useParams();
 
   const { onOpen, onClose, isOpen } = useDisclosure()
-  let id = 'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
-  const user = '3958dc9e-712f-4377-85e9-fec4b6a6442a'
+  //let pgID = 'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
+  //const user = '3958dc9e-712f-4377-85e9-fec4b6a6442a'
   //hard coded goal page id, will be controlled by header nav???
 
   //data structure????
@@ -76,11 +69,10 @@ export default function Goals() {
   const [activeDate, setActiveDate] = useState(date);
 
   useEffect(() => {
-    getGoals(user, activeDate)
-
+    getGoals()
   }, [activeDate.getMonth()]);
 
-  const getGoals = async (userID, date) => {
+  const getGoals = async () => {
 
     try {
       const res = await fetch(`/api/goalsPages/${id}?activeDate=${activeDate}`,{
