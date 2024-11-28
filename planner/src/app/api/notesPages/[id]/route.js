@@ -1,24 +1,26 @@
-// GET NOTES
+// GET NOTES for given page
 import { NextResponse } from "next/server";
 const { db } = require('@vercel/postgres');
 const bcrypt = require('bcrypt');
 
-export async function GET(req, res){
+export async function GET(req, {params}, res){
     //const data = req.params
     let notes;
     //            WHERE ${data.email} = email
-    //console.log('db connect?',data)
+    
+    let id = params.id;
+    //5f70f8be-164d-4762-bbdd-9c5c2b46d48b
+    console.log('db connect?',id)
 
     const client = await db.connect();
     try {
         
-        
         notes = await client.sql`
         SELECT *
         FROM notes
+        WHERE fk_note_pg = ${id};
         `;
         
-
         return NextResponse.json( notes.rows, { status: 201 })
         
     } catch (error) {
