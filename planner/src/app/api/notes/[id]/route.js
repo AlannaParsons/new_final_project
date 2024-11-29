@@ -12,7 +12,7 @@ export async function POST(req, res){
   const {id, notes} = await req.json();
   const client = await db.connect();
   let insertedNotes;
-  console.log('post recieved', notes)
+  let response = [];
 
   try {
 
@@ -21,30 +21,34 @@ export async function POST(req, res){
         return client.sql`
         INSERT INTO notes (fk_note_pg, date, note)
         VALUES (${id}, ${note.date}, ${note.note} )
-        RETURNING id;
+        RETURNING *;
         ;
       `;
       }),
     );
+
+    //structure response
+    insertedNotes.map((resp) => {
+      response.push(resp.rows[0])
+    })
       
   } catch (error) {
-      console.error('Error updating goal completion:', error);
+      console.error('Error posting notes:', error);
       return NextResponse.json({ message: 'Post Error' }, { status: 400 })
   } finally {
       await client.end();
   }
 
-  return NextResponse.json({ message: insertedNotes }, { status: 201 })
+  return NextResponse.json( response , { status: 201 })
 }
 
 export async function PATCH(req, res){
   //const id = params.id; 
   
-
   const {notes} = await req.json();
   const client = await db.connect();
   let patchedNotes;
-  console.log('patchrecieved', notes)
+  let response = [];
 
   try {
     patchedNotes = await Promise.all(
@@ -53,18 +57,23 @@ export async function PATCH(req, res){
         UPDATE notes
         SET note=${note.note}
         WHERE id = ${note.id}
-        RETURNING id;
+        RETURNING *;
         ;
       `;
       }),
     );
+
+    //structure response
+    patchedNotes.map((resp) => {
+      response.push(resp.rows[0])
+    })
       
   } catch (error) {
-      console.error('Error updating goal:', error);
+      console.error('Error updating notes:', error);
       return NextResponse.json({ message: 'Patch Error' }, { status: 400 })
   } finally {
       await client.end();
   }
 
-  return NextResponse.json({ message: patchedNotes }, { status: 201 })
+  return NextResponse.json( response , { status: 201 })
 }
