@@ -11,20 +11,17 @@
         // note : "test5"}, ...(~30 length)]
 //
 //-------------------------------------------------------------
-// different structure of date from db vs userData presets... problem?
+// different structure of date from db vs activeData presets... problem?
 // eventually save via debounce??? maybe
 // deleted note will be empty string in db
-// renaming needed for page id. confusing
-// to avoid unnecessary call to db, reset dbdatacopy while saving
-// dont include not page id in original get, not necessary\
 // date data comes in as date string, should be date obj, will need to be coverted lots :s
-// userData (name change-> active data). 
-// active data. should we only store active notes instead of placing it in array via date...
+// id (name change -> pageID)
 // do more data structuring on back end?
+// make empty data structure when month changed. inefficient?
 "use client"
 
 import styles from "@/app/page.module.css";
-import { daysInMonth, date, firstDayOfMonth } from "@/utils/dateUtils.js"
+import { getDaysInMonth, date } from "@/utils/dateUtils.js"
 import {   
   Box,
   Button,
@@ -44,23 +41,27 @@ export default function Notes() {
   const [activeDate, setActiveDate] = useState(date);
   const ref = useRef();
 
-  let firstDate = new Date(activeDate.getFullYear(), activeDate.getMonth(),'01')
-  let hold = Array(daysInMonth).fill(null).map((_, i) => {
-    const newDate = new Date(firstDate);
-    newDate.setDate(firstDate.getDate() + i);
-    return {id: null, date: newDate, note: null};
-  })
+  // make empty data structure for month
+  const emptyDataStructure = (activeDate) => {
+    let firstDate = new Date(activeDate.getFullYear(), activeDate.getMonth(),'01')
+    let temp = Array(getDaysInMonth(activeDate)).fill(null).map((_, i) => {
+      const newDate = new Date(firstDate);
+      newDate.setDate(firstDate.getDate() + i);
+      return {id: null, date: newDate, note: null};
+    })
+    return temp
+  }
 
-  const [userData, setData] = useState(hold);
+  const [activeData, setActiveData] = useState(emptyDataStructure(activeDate));
   const [dbDataCopy, setDataCopy] = useState();  // set by initial call. updated on save
-  //let dbDataCopy = [];
 
   useEffect(() => {
     getNotes()
     ref.current.children[activeDate.getDate()].scrollIntoView({ behavior: 'smooth', block: 'center' })
-  },[activeDate]);
+  },[activeDate.getMonth()]);
 
   const getNotes = async () => {
+
     try {
       const res = await fetch(`/api/notesPages/${id}?activeDate=${activeDate}`,{
         method: 'GET',
@@ -71,19 +72,17 @@ export default function Notes() {
       
       if(res.ok){
         let response = await res.json()
-        let temp = [...userData];
-        // best is date is date obj, not string
+        let temp = emptyDataStructure(activeDate);
         setDataCopy(response);
 
         //set note @ date location in dates array, set in og state
         // use stored date to place data in correct order
-        // i dont love this...
         for (let noteItem of response){
           let date = new Date(noteItem.date)
           temp[date.getDate() - 1].id = noteItem.id
           temp[date.getDate() - 1].note = noteItem.note
         }
-        setData(temp);
+        setActiveData(temp);
         console.log("Yeai!",response)
       }else{
         console.log("Oops! Something is wrong.")
@@ -130,15 +129,12 @@ export default function Notes() {
         let response = await res.json()
         console.log("Yeai! PATCH",response)
         //update db data copy. all edit items will exist in db data copy
-        // wtf. not necessary????
         let temp = dbDataCopy.map((noteItem) => {
           let found = response.find((responseNote) => noteItem.id === responseNote.id)
-          // :s
           noteItem.note = found ? found.note : noteItem.note;
           return noteItem
         })
         setDataCopy(temp)
-
       }else{
         console.log("Oops! Something is wrong.")
       }
@@ -147,8 +143,7 @@ export default function Notes() {
     }
   }
 
-// comapre initial data pull to current data to determine post or patch. 
-//    will need to force reload or continued edit will be a problem
+// compare known saved data to current data to determine post or patch. 
 //  is this too cumbersome. is there an easier way?
   const handlePostPatch = () => {
     let patchFiltered = [];
@@ -156,7 +151,7 @@ export default function Notes() {
     
     // patch - not null. not in og data
     // post - not null. in og data but edited note
-    userData.map((day) => {
+    activeData.map((day) => {
       if(day.note){    //not null
         let found = dbDataCopy.find((dbDay) => {
           let typedDate = new Date(dbDay.date);
@@ -173,21 +168,19 @@ export default function Notes() {
         }
       }
     })
-    if (patchFiltered.length>0){patchNotes(patchFiltered);}
-    if (postFiltered.length>0){postNotes(postFiltered);}
-    //reset dbdatacopy 
-    console.log('postpatch', postFiltered,patchFiltered)
+    if (patchFiltered.length > 0){patchNotes(patchFiltered);}
+    if (postFiltered.length > 0){postNotes(postFiltered);}
   }
 
   //update state with user input
   const handleChange = (input, i) => {
-    let temp = [...userData];
+    let temp = [...activeData];
     temp[i].note = input;
-    setData(temp);
+    setActiveData(temp);
   }
 
   const testFunc = () => {
-    console.log('check dbcopy state', dbDataCopy, 'compare', userData)
+    console.log('check date', activeDate, ':',getDaysInMonth(activeDate))
   }
 
   return (
@@ -201,7 +194,7 @@ export default function Notes() {
           align='stretch'
           ref={ref}>
 
-          {userData.map((day, i) => {
+          {activeData.map((day, i) => {
             let value = '...'
 
             if (day.note) {

@@ -1,16 +1,19 @@
 // GET NOTES for given page
+//----------------------------------
+// will need to impliment user id filter
+
 import { NextResponse } from "next/server";
 const { db } = require('@vercel/postgres');
 const bcrypt = require('bcrypt');
 
 export async function GET(req, {params}, res){
-    //const data = req.params
     let notes;
-    //            WHERE ${data.email} = email
-    
-    let id = params.id;
-    //5f70f8be-164d-4762-bbdd-9c5c2b46d48b
-    console.log('db connect?',id)
+    let id = params.id;        //5f70f8be-164d-4762-bbdd-9c5c2b46d48b - (primary source for testing)
+    let month = new Date();   // set default (should never not get an active date?)
+
+    if (req.nextUrl.searchParams) {
+        month = new Date(req.nextUrl.searchParams.get('activeDate')).getMonth() + 1;
+    }
 
     const client = await db.connect();
     try {
@@ -18,9 +21,10 @@ export async function GET(req, {params}, res){
         notes = await client.sql`
         SELECT *
         FROM notes
-        WHERE fk_note_pg = ${id};
+        WHERE fk_note_pg = ${id}
+            AND EXTRACT(MONTH FROM date) = ${month};
         `;
-        
+
         return NextResponse.json( notes.rows, { status: 201 })
         
     } catch (error) {
@@ -29,10 +33,4 @@ export async function GET(req, {params}, res){
     } finally {
         await client.end();
     }
-
 }
-
-// export async function GET(req: Request, { params }, res: Response){
-//     const id = params.id
-//     let therapist;
-//     console.log('api search id:',id)
