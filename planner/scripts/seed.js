@@ -61,14 +61,6 @@ async function seedNotes(client) {
       );
     `;
     console.log(`Created "notesPages" table`);
-//   fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
-//   constraint fk_page_unit
-//   foreign key (fk_rank_pg) 
-//   REFERENCES rankPages(id),
-// fk_status UUID DEFAULT uuid_generate_v4(), 
-//   constraint fk_rank_setting
-//   foreign key (fk_status) 
-//   REFERENCES rankSettings(id),
 
   //note may be resricted <255
   const createNotesTable = await client.sql`
@@ -235,6 +227,10 @@ async function seedRanking(client) {
     const createSettingsTable = await client.sql`
       CREATE TABLE IF NOT EXISTS rankSettings (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
+          constraint fk_page_settings
+          foreign key (fk_rank_pg) 
+          REFERENCES rankPages(id),
         rank_int INT,
         color VARCHAR(255),
         phrase VARCHAR(255)
@@ -278,8 +274,8 @@ async function seedRanking(client) {
     const insertedRankSettings = await Promise.all(
       rankSettings.map(async (rankSet) => {
         return client.sql`
-        INSERT INTO rankSettings (id, rank_int, color, phrase)
-        VALUES (${rankSet.id}, ${rankSet.rank_int}, ${rankSet.color}, ${rankSet.phrase})
+        INSERT INTO rankSettings (id, fk_rank_pg, rank_int, color, phrase)
+        VALUES (${rankSet.id}, ${rankSet.rank_tbl}, ${rankSet.rank_int}, ${rankSet.color}, ${rankSet.phrase})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),

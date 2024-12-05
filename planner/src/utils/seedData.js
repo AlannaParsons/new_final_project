@@ -161,73 +161,77 @@ const users = [
       id: 1,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: '046247cb-398f-4b0e-954c-3c0d7e1f64b1',
-      date: '2024-11-08'
+      date: '2024-11-09'
     },
     {
       id: 2,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: '76ae695f-9784-46b3-92c2-996d9af76892',
-      date: '2024-11-08'
+      date: '2024-11-10'
     },
     {
       id: 3,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: '046247cb-398f-4b0e-954c-3c0d7e1f64b1',
-      date: '2024-11-08'
+      date: '2024-11-11'
     },
     {
       id: 4,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: 'e5da41ee-2b4d-4ba8-8475-fa42fd97fa8d',
-      date: '2024-11-08'
+      date: '2024-11-12'
     },
     {
       id: 5,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: '63a8a3ca-a9ce-4d05-91db-a010bd0e5154',
-      date: '2024-11-08'
+      date: '2024-11-13'
     },
     {
       id: 6,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: 'e5da41ee-2b4d-4ba8-8475-fa42fd97fa8d',
-      date: '2024-11-08'
+      date: '2024-11-14'
     },
     {
       id: 7,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: '63a8a3ca-a9ce-4d05-91db-a010bd0e5154',
-      date: '2024-11-08'
+      date: '2024-11-15'
     },
     {
       id: 8,
       rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_set: 'e5da41ee-2b4d-4ba8-8475-fa42fd97fa8d',
-      date: '2024-11-08'
+      date: '2024-11-16'
     },
   ]
 
   rankSettings= [
     {
       id: '76ae695f-9784-46b3-92c2-996d9af76892',
+      rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_int: 0,
       color: 'red',
       phrase: 'bad'
     },
     {
       id: 'e5da41ee-2b4d-4ba8-8475-fa42fd97fa8d',
+      rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_int: 1,
       color: 'purple',
       phrase: 'meh'
     },
     {
       id: '046247cb-398f-4b0e-954c-3c0d7e1f64b1',
+      rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_int: 2,
       color: 'blue',
       phrase: 'better'
     },
     {
       id: '63a8a3ca-a9ce-4d05-91db-a010bd0e5154',
+      rank_tbl: '6a54003e-8260-4245-b073-221ca81f6c66',
       rank_int: 3,
       color: 'green',
       phrase: 'best'
