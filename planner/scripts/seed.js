@@ -287,8 +287,8 @@ async function seedRanking(client) {
     const insertedRanks = await Promise.all(
       rankingUnit.map(async (rankUnit) => {
         return client.sql`
-        INSERT INTO ranks (id, fk_rank_pg, fk_status, date)
-        VALUES (${rankUnit.id}, ${rankUnit.rank_tbl}, ${rankUnit.rank_set},  ${rankUnit.date})
+        INSERT INTO ranks ( fk_rank_pg, fk_status, date)
+        VALUES ( ${rankUnit.rank_tbl}, ${rankUnit.rank_set},  ${rankUnit.date})
         ON CONFLICT (id) DO NOTHING;
       `;
       }),
