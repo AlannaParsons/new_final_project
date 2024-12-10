@@ -36,7 +36,6 @@ export async function DELETE(req, {params}, res){
   const client = await db.connect();
   let id = params.id;
   let rankItem;
-  console.log('getting here:',id)
 
   try {
     rankItem = await client.sql`

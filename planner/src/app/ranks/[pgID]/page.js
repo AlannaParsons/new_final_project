@@ -18,18 +18,13 @@
 // notes creates data structure preemtivley. goals doesnt, read into structure at load. how for ranks?
 //may need to save rank page on settings to easily load top legend
 //can data structuring for each page be the same? mov into external util?
-// use status component for legend? limited color availablity
-// https://www.chakra-ui.com/docs/components/color-swatch
 // post patch running a little slow, come back for potential optimization. optomistically change state??
 //use rank int later to allow for dynamic color legend... if legend is changed, how to deal with old data?
-//double check saved items not over writing
-//consider deletion mechanics. add delete option to legend?
 //consider how user is setting up color legend initially. settings page usage?
 "use client"
 
-import Image from "next/image";
 import styles from "@/app/page.module.css";
-import { daysInMonth, date, firstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils"
+import { date, firstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils"
 import {
   Box,
   Button,
@@ -37,34 +32,25 @@ import {
   SimpleGrid,
   Tag,
   TagLabel,
-  TagLeftIcon,
-  TagRightIcon,
-  TagCloseButton,
   useToast
 } from '@chakra-ui/react';
-
 import React, { useState, useEffect } from "react";
 import { SubHeader } from '@/components/SubHeader';
 import { useParams } from 'next/navigation';
 
 export default function Ranking() {
   const toast = useToast();
-
   const [colorLegend, setColorLegend] = useState([]);
-  //doesn't need to be stately?? legend held in status OR delete option?
   const [status, setStatus] = useState({ id: null, color: null });
   const [activeDate, setActiveDate] = useState(date);
   const [activeData, setActiveData] = useState([]);
-
-  //let pgID = '6a54003e-8260-4245-b073-221ca81f6c66'
-  const { pgID } = useParams();
+  const { pgID } = useParams();   //let pgID = '6a54003e-8260-4245-b073-221ca81f6c66'
 
   useEffect(() => {
     getRanksPage()
   }, [activeDate.getMonth()]);
 
-  // make empty data structure for month
-  const emptyDataStructure = (activeDate) => {
+  const emptyDataStructure = (activeDate) => {    // make empty data structure for month
     let firstDate = new Date(activeDate.getFullYear(), activeDate.getMonth(), '01')
     let temp = Array(getDaysInMonth(activeDate)).fill(null).map((_, i) => {
       const newDate = new Date(firstDate);
@@ -75,7 +61,6 @@ export default function Ranking() {
   }
 
   const handleDateClick = (rankDay) => {
-
     if (status.id === null) {     //error handling toast
       toast({
         title: 'Date not changed.',
@@ -94,10 +79,6 @@ export default function Ranking() {
     } else { postRank(rankDay.date, status) }
   };
 
-  const testFunc = () => {
-    console.log('check date', activeDate, ':', activeData, 'status:', status)
-  }
-
   const getRanksPage = async () => {
     try {
       const res = await fetch(`/api/ranksPages/${pgID}?activeDate=${activeDate}`, {
@@ -112,10 +93,10 @@ export default function Ranking() {
         console.log("Yeai!", response)
         let temp = emptyDataStructure(activeDate);
         //set color legend should only run once, not on every call when month is changed. seperate call?
+        // depends on future dynamic legend. leave for now 
         setColorLegend(response.legend)
 
-        //set rank @ date location in dates array, set in og state
-        // use stored date to place data in correct order
+        //set rank @ date location in dates array, use stored date to place data in correct order
         for (let rankItem of response.ranks) {
           let date = new Date(rankItem.date)
           temp[date.getDate() - 1].id = rankItem.rank_id,
@@ -132,7 +113,6 @@ export default function Ranking() {
   }
 
   const postRank = async (date, status) => {
-
     try {
       const res = await fetch(`/api/ranks`, {
         method: 'POST',
@@ -148,14 +128,12 @@ export default function Ranking() {
         // use response to update active data state
         let date = new Date(response.date);
         let found = colorLegend.find((colorData) => colorData.id === response.fk_status);
-
         let temp = [...activeData];
         temp[date.getDate() - 1] = {
           id: response.id,
           date: date,
           color: found.color
         }
-
         setActiveData(temp);
       } else {
         console.log("Oops! Something is wrong.")
@@ -166,7 +144,6 @@ export default function Ranking() {
   }
 
   const patchRank = async (id, status) => {
-
     try {
       const res = await fetch(`/api/ranks/${id}`, {
         method: 'PATCH',
@@ -183,12 +160,10 @@ export default function Ranking() {
         let date = new Date(response.date)
         let found = colorLegend.find((colorData) => colorData.id === response.fk_status)
         let temp = [...activeData];
-
         temp[date.getDate() - 1] = {
           ...temp[date.getDate() - 1],
           color: found.color
         }
-
         setActiveData(temp);
       } else {
         console.log("Oops! Something is wrong.")
@@ -199,7 +174,6 @@ export default function Ranking() {
   }
 
   const deleteRank = async (id) => {
-
     try {
       const res = await fetch(`/api/ranks/${id}`, {
         method: 'DELETE',
@@ -214,7 +188,6 @@ export default function Ranking() {
 
         let date = new Date(response.date)
         let temp = [...activeData];
-
         temp[date.getDate() - 1] = {
           id: null,
           date: date,
@@ -276,10 +249,6 @@ export default function Ranking() {
       </main>
 
       <footer >
-
-        <Box position='fixed' bottom='1em' right='1em' >
-          <Button onClick={() => { testFunc() }} colorScheme='green'> Test</Button>
-        </Box>
       </footer>
     </div>
   );
