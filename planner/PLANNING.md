@@ -68,6 +68,7 @@ limitations -
         - make more specific? could be used for memories, gratitude journal or classic calendar
     - rating
         - make more specific? could be used for weather, mood, or period tracker. make premade layouts for specific use. use props? 
+        - rank int in db data is meant to maintain dynamic nature of ledgend.. revisit when implimenting legend 
     - settings
         -cont settings. color use. add pages
 
@@ -79,6 +80,9 @@ limitations -
     - make a 'are you sure you want to delete' pop up
     - allow for different legend types
     - how to add new pages for user
+    - check double load "bug", likely strict mode, double check
+    - sub header and active date will likely be moved into higher level layout, pass active date as prop to pages/components
+    - start stripping unnecessary data returns from db calls
 
     more pages - 
         week
@@ -108,12 +112,16 @@ limitations -
             goals -> many, singular
             notes -> memories, dreams, reg calendar? LENGTH MAX???
         - 
-        
+
+    page tabs currently labeled by page type. make customizeable?        
 
 # For considereation
     - calendar component imported into header.... replace all other calendar uses??
     -year in pixels should act as a sub type page of ranking, easier to organize, all pages could have their own aggrigate
-
+    - timezones may likely be an issue. revisit with uts eventually
+    - could do component pieces instead of seperate page set up. may mess up how back end is used
+    - ranks and notes similar front end. edit goals to match?
+    - plan is for data to be stored locally. database set up is for showing purpose
 
 # Future Dev 
 
