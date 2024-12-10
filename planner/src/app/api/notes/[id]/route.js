@@ -1,5 +1,5 @@
 // Notes Routes
-// user to interact w notes table
+// user to interact w notes table w singular note id
 
 import { NextResponse } from "next/server";
 const { db } = require('@vercel/postgres');
