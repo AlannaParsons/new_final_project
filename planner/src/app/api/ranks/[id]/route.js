@@ -8,11 +8,10 @@ const bcrypt = require('bcrypt');
 //patching status in ranks table
 export async function PATCH(req, {params}, res){
 
-  let id = params.id;
   const { statusID } = await req.json();
   const client = await db.connect();
+  let id = params.id;
   let rankItem;
-  console.log('inputs', id, ',', statusID)
 
   try {
     rankItem = await client.sql`
@@ -25,6 +24,30 @@ export async function PATCH(req, {params}, res){
   } catch (error) {
       console.error('Error updating rank:', error);
       return NextResponse.json({ message: 'Patch Error' }, { status: 400 })
+  } finally {
+      await client.end();
+  }
+
+  return NextResponse.json(rankItem.rows[0] , { status: 201 })
+}
+
+export async function DELETE(req, {params}, res){
+
+  const client = await db.connect();
+  let id = params.id;
+  let rankItem;
+  console.log('getting here:',id)
+
+  try {
+    rankItem = await client.sql`
+          DELETE FROM ranks
+          WHERE id = ${id}
+          RETURNING *;
+      `;
+      
+  } catch (error) {
+      console.error('Error deleting rank:', error);
+      return NextResponse.json({ message: 'Delete Error' }, { status: 400 })
   } finally {
       await client.end();
   }
