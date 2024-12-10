@@ -11,13 +11,13 @@
         // note : "test5"}, ...(~30 length)]
 //
 //-------------------------------------------------------------
-// different structure of date from db vs activeData presets... problem?
 // eventually save via debounce??? maybe
 // deleted note will be empty string in db
-// date data comes in as date string, should be date obj, will need to be coverted lots :s
 // id (name change -> pageID)
 // do more data structuring on back end?
 // make empty data structure when month changed. inefficient?
+// almost complete?
+//create empty month array. different from how goals works?
 "use client"
 
 import styles from "@/app/page.module.css";
