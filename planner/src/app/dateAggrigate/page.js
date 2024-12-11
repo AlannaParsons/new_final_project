@@ -61,53 +61,6 @@ export default function DateAggrigate() {
     }
   }
 
-  const getGoals = async () => {
-
-    try {
-      const res = await fetch(`/api/notesPages/${id}?activeDate=${activeDate}`,{
-        method: 'GET',
-        headers: {
-          'content-type': 'application/json'
-        }
-      })
-      
-      if(res.ok){
-        let response = await res.json()
-        let temp = emptyDataStructure(activeDate);
-        setDataCopy(response);
-
-        //set note @ date location in dates array, set in og state
-        // use stored date to place data in correct order
-        for (let noteItem of response){
-          let date = new Date(noteItem.date)
-          temp[date.getDate() - 1].id = noteItem.id
-          temp[date.getDate() - 1].note = noteItem.note
-        }
-        setActiveData(temp);
-        console.log("Yeai!",response)
-      }else{
-        console.log("Oops! Something is wrong.")
-      }
-    } catch (error) {
-        console.log(error)
-    }
-  }
-
-  const DateGoals = async (userID) => {
-    <SimpleGrid columns={7} spacing={1}> {/*  empty slots */}
-    {[...Array(firstDayOfMonth)].map(function (object, i) {
-      return <Button key={i} height='20px' />;
-    })}
-
-    {activeData.map((day, i) => {
-      return <Button key={`${i} ${day.color}`} height='20px' colorScheme={day.color || 'gray'} onClick={() => handleDateClick(day)} >{i + 1}</Button>
-
-    })}
-  </SimpleGrid>
-  }
-
-
-
   const testFunc = () => {
     console.log('check date', userPages)
     let date = new Date('2024-12-10')

@@ -1,5 +1,16 @@
 //
-//user will make set of goals to be checked off each day
+// User will make set of goals to be checked off each day
+//  db data in: [{
+  // completion : [{date: '2024-11-12'},...]
+  // fk_goal_pg : "f348abf8-6a35-4f4f-a275-bf4aab188f1d"
+  // id : "27e6f92f-23bb-49e0-87ec-796568eaef0e"
+  // title : "exercise"
+// }, ...]
+//  data internal: [{
+// id: '15', 
+// date: "2024-11-09T07:00:00.000Z",
+// color: 'red'}, ...]
+//
 //..................................................................................
 // notes/edits:
 // check length of inputs. allow wrapping or sizing will be fd
@@ -10,10 +21,12 @@
 // active date is running in a way that is saving cur as +1
 // prevent duplicate completion posts. t/f status based on setting?
 // better way to access multiple params in get??? useSearchParams()
-// don't have modal on map. only 1 modal
+//  change how saving items works. db response to pot should be newest version of data
+// put data into structure on load, different from notes...
+//rename userData => activeData
+
 // bugs:
 //  bug w modal, focus issue
-//  useeffect running twice, fix
 //
 
 "use client"
@@ -22,6 +35,7 @@ import Image from "next/image";
 import styles from "@/app/page.module.css";
 import { daysInMonth, firstDayOfMonth, getFirstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils.js";
 import {
+  Box,
   Button,
   Flex,
   FormControl,
@@ -38,7 +52,10 @@ import {
   useDisclosure,
   SimpleGrid,
   Spacer,
-  Center
+  Center,
+  Tag,
+  TagLabel,
+  HStack
 } from '@chakra-ui/react';
 import { CheckIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
 import { colorLegend } from '@/utils/mockData.js';
@@ -54,8 +71,6 @@ export default function Goals() {
 
   const { onOpen, onClose, isOpen } = useDisclosure()
   //let pgID = 'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
-  //const user = '3958dc9e-712f-4377-85e9-fec4b6a6442a'
-  //hard coded goal page id, will be controlled by header nav???
 
   //data structure????
   //should only successful complettions save? probably. leave status property for clarity and error checking?
@@ -67,6 +82,8 @@ export default function Goals() {
   const [editInput, setEdit] = useState({});
   const date = new Date();
   const [activeDate, setActiveDate] = useState(date);
+  const [status, setStatus] = useState({ id: null, color: null });
+
 
   useEffect(() => {
     getGoals()
@@ -97,7 +114,7 @@ export default function Goals() {
             }
           }
           temp.push({'id': `${goal.id}`, 'title': `${goal.title}`, 'completion': completionArr})
-        }
+        } 
 
         setData(temp);
         
@@ -209,6 +226,10 @@ export default function Goals() {
     onOpen()
   }
 
+  const testFunc = () => {
+    console.log('check data', userData)
+  }
+
   return (
     <div className={styles.page}>
       <main className={styles.main}>
@@ -216,7 +237,19 @@ export default function Goals() {
 
         GOALS
         <Suspense>
-        <Button onClick={goalAdd} height='20px'> + </Button>
+        <HStack>
+          <Button onClick={goalAdd} height='20px'> + </Button>
+          <Tag
+            size='md'
+            borderRadius='full'
+            variant={status.id === 'delete' ? 'solid' : 'subtle'}
+            colorScheme='red'
+            onClick={() => {
+              setStatus({ id: 'delete', color: null })
+            }}
+          >      <TagLabel>X</TagLabel>
+          </Tag>
+        </HStack>
 
         <SimpleGrid columns={2} spacing={5}>
 
@@ -278,48 +311,9 @@ export default function Goals() {
         </Suspense>
       </main>
       <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <Box position='fixed' bottom='1em' right='1em' >
+          <Button onClick={() => {testFunc()}} colorScheme='green'> Test</Button>
+        </Box>
       </footer>
     </div>
   );
