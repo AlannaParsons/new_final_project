@@ -14,7 +14,7 @@ import {
   Spacer } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons'
 import { paletteData } from '../../utils/mockData.js';
-import getRandomColor from '../../utils/tempFunc.js';
+import getRandomColor from '../../utils/funcs.js/index.js';
 import React, { useState } from "react";
 
 export default function Settings() {

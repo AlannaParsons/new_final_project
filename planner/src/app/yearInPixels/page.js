@@ -6,7 +6,7 @@
 
 import Image from "next/image";
 import styles from "../page.module.css";
-import { daysInMonthCalc, firstDayOfMonth } from "../utils/dateUtils";
+import { daysInMonthCalc, firstDayOfMonth } from "../../utils/dateUtils";
 import {
   Box,
   Button,
@@ -30,10 +30,10 @@ import {
   VStack
 } from '@chakra-ui/react';
 import { CheckIcon, CloseIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { colorLegend } from '../utils/mockData.js';
-import { SubHeader } from '../components/SubHeader'
+import { colorLegend } from '../../utils/mockData.js';
+import { SubHeader } from '../../components/SubHeader'
 import React, { useState, useRef } from "react";
-import getRandomColor from '../utils/tempFunc.js';
+import getRandomColor from '../../utils/funcs.js/index.js';
 import Month from "react-calendar/dist/cjs/YearView/Month";
 
 
