@@ -43,13 +43,13 @@ export async function GET(req, {params}, res){
         FROM ranksettings
         WHERE fk_rank_pg = ${pgID}
         `;
-
-        return NextResponse.json({ ranks: ranks.rows, legend: rankLegend.rows, status: 201 })
-        
+   
     } catch (error) {
-        console.error('Notes not found:', error);
+        console.error('Ranks not found:', error);
         return NextResponse.json({ message: 'Error' }, { status: 400 })
     } finally {
         await client.end();
     }
+
+    return NextResponse.json({ ranks: ranks.rows, legend: rankLegend.rows, status: 201 })
 }

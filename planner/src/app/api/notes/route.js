@@ -7,31 +7,37 @@ const bcrypt = require('bcrypt');
 
 //eventually return new data? place back on page using dates and indexing...
 //currently just returning created id
-export async function GET(req, res){
-  //if user has page but no data for date??
-  const client = await db.connect();
-  let activeDate = new Date();   // set default (should never not get an active date?)
-  let note;
+export async function POST(req, res){
 
-  if (req.nextUrl.searchParams) {
-      activeDate = new Date(req.nextUrl.searchParams.get('activeDate'));
-  }
-  let dateNoTimeStr = `${activeDate.getFullYear()}-${activeDate.getMonth()+1}-${activeDate.getDate()}`;
+  const {id, notes} = await req.json();
+  const client = await db.connect();
+  let insertedNotes;
+  let response = [];
 
   try {
-    //change to json call, nesting status info
-    note = await client.sql`
-    SELECT note
-    FROM notes
-    WHERE date = ${dateNoTimeStr}
-    `;
+
+    insertedNotes = await Promise.all(
+      notes.map(async (note) => {
+        return client.sql`
+        INSERT INTO notes (fk_note_pg, date, note)
+        VALUES (${id}, ${note.date}, ${note.note} )
+        RETURNING *;
+        ;
+      `;
+      }),
+    );
+
+    //structure response
+    insertedNotes.map((resp) => {
+      response.push(resp.rows[0])
+    })
       
   } catch (error) {
-    console.error('Note not found:', error);
-    return NextResponse.json({ message: 'Error' }, { status: 400 })
+      console.error('Error posting notes:', error);
+      return NextResponse.json({ message: 'Post Error' }, { status: 400 })
   } finally {
-    await client.end();
+      await client.end();
   }
 
-  return NextResponse.json( note.rows[0], { status: 201 })
+  return NextResponse.json( response , { status: 201 })
 }
