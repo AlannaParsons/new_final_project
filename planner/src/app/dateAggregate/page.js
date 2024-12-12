@@ -8,6 +8,11 @@
 //
 //-------------------------------------------------------------
 // re organize components necessary for this page? all 1 file?
+// get page to load all pages w saved data
+// error handling for not data on given date
+// date traversal
+// dynamic piecing together of page data. tile system
+//individual data point keys can be null if not set for that day. problem? or used for empty placeholder?
 
 "use client"
 
@@ -22,26 +27,31 @@ import {
   TagLabel,
   useToast
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import { SubHeader } from '@/components/SubHeader';
 import DateRank from '@/components/DateRank';
 import DateNote from '@/components/DateNote';
 import DateGoals from '@/components/DateGoals';
 
 export default function DateAggrigate() {
+  // pointless if i move to local storage...
   let user = '3958dc9e-712f-4377-85e9-fec4b6a6442a';
   const [activeDate, setActiveDate] = useState(date);
-  //doesnt need to be stately
-  const [userPages, setUserPages] = useState([]);
-  //const functionMap = {'notes': , 'ranks', 'goals'}
+  // single piece of data per page
+  const [activeData, setActiveData] = useState([]);
+  const functionMap = {
+    'notes':  <DateNote props={activeData.notes}> </DateNote>,
+    'ranks': <DateRank props={activeData.ranks}> </DateRank>,
+    'goals': <DateGoals props={activeData.goals}> </DateGoals>
+  }
 
   useEffect(() => {
     getPages(user)
   }, []);
 
-  const getPages = async (userID) => {
+  const getPages = async () => {
     try {
-      const res = await fetch(`/api/header/${userID}`,{
+      const res = await fetch(`/api/dateAggregate?activeDate=${activeDate}`,{
         method: 'GET',
         headers: {
           'content-type': 'application/json'
@@ -50,7 +60,7 @@ export default function DateAggrigate() {
       
       if(res.ok){
         let response = await res.json()
-        setUserPages(response);
+        setActiveData(response);
         
         console.log("Yeai!",response)
       }else{
@@ -63,8 +73,7 @@ export default function DateAggrigate() {
 
   const testFunc = () => {
     console.log('check date', userPages)
-    let date = new Date('2024-12-10')
-    console.log('check date', activeDate, activeDate.setHours(0, 0, 0, 0) == date)
+
   }
 
   return (
@@ -73,29 +82,15 @@ export default function DateAggrigate() {
         <SubHeader activeDate={activeDate} setActiveDate={setActiveDate} />
 
         LEGEND
-
-        {/* <HStack>
-          {userPages.map((page) => {
-            return  <Box key={`${page.id}`} >                 
-              {page.type} 
-            </Box>
-          })}
-
-        </HStack> */}
-
         
-        {/* <HStack>
-          {userPages.map((page) => {
-            functionmap.page.type
-            return  <Box key={`${page.id}`} >                 
-              {page.type} 
-            </Box>
+        <HStack>
+          {Object.keys(activeData).map((page) => {
+                    {/* {activeData.map((page) => { */}
+            //does this double up keys = problem?
+            return  <Fragment key={activeData[page].id}>{functionMap[page]}</Fragment>
           })}
 
-        </HStack> */}
-        <DateRank activeDate={activeDate}> </DateRank>
-        <DateNote activeDate={activeDate}> </DateNote>
-        <DateGoals activeDate={activeDate}> </DateGoals>
+        </HStack>
 
       </main>
 
