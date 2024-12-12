@@ -36,9 +36,11 @@ templates are added by user -> avoid bloat/overwhelming
 user can go to settings to add sections to journal. provide preview?
 
 # Data
+LOCAL OR NOT??????
+
 data to be stored locally. may integrate clouds backup in future to enable desktop use
 consider redesign. most templates can be reused in mulitple categories. 
-redesign -  
+redesign -  UPDATE
     rankingTable = { id: 0, fk_user_id: '', title: mood}
         ranking: {date: date, rank setting idFK, ranking table FK} 
         rankseting: {id, rank int, color:string, phrase:string, rankingtable FK}
@@ -55,7 +57,6 @@ user = {
 }
 
 limitations -
-    notes and goals cannot currently handle multiple pages?
     ranking - # of ranks will be static after creation
 
 
@@ -63,7 +64,6 @@ limitations -
     - goals
         - simple version in place. make page for goals that arent daily? bigger goal specific page?
         - can change day of month to set past dates (deny access to change future dates?)
-            -cannot currently change months to see old results
     - notes
         - make more specific? could be used for memories, gratitude journal or classic calendar
     - rating
@@ -83,6 +83,8 @@ limitations -
     - check double load "bug", likely strict mode, double check
     - sub header and active date will likely be moved into higher level layout, pass active date as prop to pages/components
     - start stripping unnecessary data returns from db calls
+    - make subheader smaller? as dev continues, it is less important, used for month traversal only?...
+    - consider goals layout, not functional ATM. make intuitive
 
     more pages - 
         week
@@ -113,7 +115,7 @@ limitations -
             notes -> memories, dreams, reg calendar? LENGTH MAX???
         - 
 
-    page tabs currently labeled by page type. make customizeable?        
+    page tabs currently labeled by page type. make customizeable? give all pages titles?       
 
 # For considereation
     - calendar component imported into header.... replace all other calendar uses??
@@ -121,7 +123,8 @@ limitations -
     - timezones may likely be an issue. revisit with uts eventually
     - could do component pieces instead of seperate page set up. may mess up how back end is used
     - ranks and notes similar front end. edit goals to match?
-    - plan is for data to be stored locally. database set up is for showing purpose
+    - plan is for data to be stored locally. database set up is for showing purpose???
+    - remove all user reference??? data should be held locally... will change ALL db storage usage... unsure...
 
 # Future Dev 
 
