@@ -1,39 +1,31 @@
 // returns rank data for single given date
-//  db data in: {
-    // rank_id: 37, 
-    // date: '2024-12-10T07:00:00.000Z', 
-    // fk_status: '046247cb-398f-4b0e-954c-3c0d7e1f64b1', 
-    // color: 'blue', 
-    // phrase: 'better'
-    //}
-  //how to handle deleted items. note deleting properly?
+//
+//  db data in: [{
+  // color: "purple"
+  // completed: "2024-12-12T07:00:00.000Z"
+  // fk_status: "e5da41ee-2b4d-4ba8-8475-fa42fd97fa8d"
+  // id: "6a54003e-8260-4245-b073-221ca81f6c66"
+  // phrase:  "meh"
+  // rank_id: 10
+  // title: "mood"
+//}
 //-------------------------------------------------------------
-
-"use client"
 
 import {
   Box,
   Spinner,
   Tag
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from "react";
+import React from "react";
 
-export default function DateRank({props}) {
-  const [activeData, setActiveData] = useState(props);
+export default function DateRank({activeData}) {
   let placeholder = 'not ranked'
-
-  // useEffect(() => {
-  //   if(!props) { return };
-  //   getRank()
-  // }, []);
-//put in .map
-console.log('inside ranks what have', activeData)
 
   return (
     <Box> 
-      { activeData ? (
+      { activeData?.ranks ? (
         <div>
-          {activeData.map((rankPG) => {         
+          {activeData.ranks.map((rankPG) => {         
             return (
               <Tag key={rankPG.id} variant='solid' colorScheme={rankPG.completed === null ? 'red' : rankPG.color }>
                 { rankPG.title } 
@@ -43,10 +35,9 @@ console.log('inside ranks what have', activeData)
             ) 
           })}
         </div>
-        ) : (
-          <Spinner></Spinner>
-        )
-      }
+      ) : (
+        <Spinner></Spinner>
+      )}
     </Box>
   );
 };

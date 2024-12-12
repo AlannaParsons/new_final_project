@@ -38,16 +38,12 @@ export default function DateAggrigate() {
   let user = '3958dc9e-712f-4377-85e9-fec4b6a6442a';
   const [activeDate, setActiveDate] = useState(date);
   // single piece of data per page
-  const [activeData, setActiveData] = useState([]);
-  const functionMap = {
-    'notes':  <DateNote props={activeData.notes}> </DateNote>,
-    'ranks': <DateRank props={activeData.ranks}> </DateRank>,
-    'goals': <DateGoals props={activeData.goals}> </DateGoals>
-  }
+  const [activeData, setActiveData] = useState({});
+
 
   useEffect(() => {
     getPages(user)
-  }, []);
+  }, [activeDate]);
 
   const getPages = async () => {
     try {
@@ -72,9 +68,17 @@ export default function DateAggrigate() {
   }
 
   const testFunc = () => {
-    console.log('check date', userPages)
+    console.log('check date', activeDate, activeData)
 
   }
+// rerendering every components when 1 component changes.... use seperate states?
+  const functionMap = {
+    'notes':  <DateNote activeData={activeData}> </DateNote>,
+    'ranks': <DateRank activeData={activeData}> </DateRank>,
+    'goals': <DateGoals activeData={activeData}> </DateGoals>
+  }
+
+
 
   return (
     <div className={styles.page}>
@@ -82,12 +86,15 @@ export default function DateAggrigate() {
         <SubHeader activeDate={activeDate} setActiveDate={setActiveDate} />
 
         LEGEND
+        {}
         
         <HStack>
           {Object.keys(activeData).map((page) => {
-                    {/* {activeData.map((page) => { */}
-            //does this double up keys = problem?
-            return  <Fragment key={activeData[page].id}>{functionMap[page]}</Fragment>
+                    // if we want dynamic, spuratic tiles, this wont work
+                    console.log('page map')
+                    //if else instead of map>? react dynamic component rendering
+
+            return  <Fragment key={page}>{functionMap[page]}</Fragment>
           })}
 
         </HStack>

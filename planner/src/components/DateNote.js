@@ -1,34 +1,26 @@
 // returns note data for single given date
-//  db data in: 
-  // {note: 'fill'}
-  //add a .completed like other data sets?
-// maybe create fully seperate empty tag if no note set
+//  db data in: [{
+//   id: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b', 
+//   note_id: null, 
+//   completed: null, 
+//   note: null
+// }, ...]
 //-------------------------------------------------------------
-
-"use client"
 
 import {
   Box,
   Spinner,
   Tag
 } from '@chakra-ui/react';
-import React, { useState, useEffect } from "react";
 
-export default function DateNote({props}) {
-  const [activeData, setActiveData] = useState(props);
+export default function DateNote({activeData}) {
   let placeholder = 'no notes'; // put inside tag? 
-
-  // useEffect(() => {
-  //   if(!props) { return };
-  //   getNote()
-  // }, []);
-  console.log('inside notes what have', activeData)
 
   return (
     <Box> 
-      { activeData ? (
+      { activeData?.notes ? (
         <div>
-          {activeData.map((notePG) => {         
+          {activeData.notes.map((notePG) => {         
             return (
               <Tag key={notePG.id} variant='solid' colorScheme={notePG.completed === null ? 'red' : 'blue' }>
                 { notePG.note ? notePG.note : placeholder}
