@@ -1,11 +1,14 @@
-// ranking allows for multiple ranking pages. redesign to allow for goals and 
-// notes as well. will necessitate vast renaming of db
+// Create _ tables within db, seed all
+//
+// redesign to stak all pages into one table
+// var char vs text?
 const { db } = require('@vercel/postgres');
 const {
   users, 
-  notesPages, notes, 
-  goalsPages, goals, goalCompletions,
-  rankPages, rankingUnit, rankSettings
+  pages,
+  notes, 
+  goals, goalCompletions,
+  rankingUnit, rankSettings
 } = require('../src/utils/seedData.js');
 const bcrypt = require('bcrypt');
 
@@ -48,47 +51,63 @@ async function seedUsers(client) {
   }
 }
 
+async function seedPages(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS pages (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        fk_user UUID DEFAULT uuid_generate_v4(), 
+          constraint fk_user_pages
+          foreign key (fk_user) 
+          REFERENCES users(id),
+        type TEXT NOT NULL,
+        title TEXT
+      );
+    `;
+
+    console.log(`Created "pages" table`);
+
+    const insertedPages = await Promise.all(
+      pages.map(async (page) => {
+        return client.sql`
+        INSERT INTO pages (id, fk_user, type, title)
+        VALUES (${page.id}, ${page.fk_user}, ${page.type}, ${page.title})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+      }),
+    );
+
+    console.log(`Seeded ${insertedPages.length} pages`);
+
+    return {
+      createTable,
+      pages: insertedPages,
+    };
+  } catch (error) {
+    console.error('Error seeding pages:', error);
+    throw error;
+  }
+}
+
 async function seedNotes(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createNotesPagesTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS notesPages (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        fk_user UUID DEFAULT uuid_generate_v4(), 
-          constraint fk_user_notesPG
-          foreign key (fk_user) 
-          REFERENCES users(id)
-      );
-    `;
-    console.log(`Created "notesPages" table`);
 
   //note may be resricted <255
   const createNotesTable = await client.sql`
     CREATE TABLE IF NOT EXISTS notes (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
       fk_note_pg UUID DEFAULT uuid_generate_v4(), 
-        constraint fk_notes_notesPG
+        constraint fk_notes_pages
         foreign key (fk_note_pg) 
-        REFERENCES notesPages(id),
+        REFERENCES pages(id),
       date DATE,
       note VARCHAR(255)
     );
     `;
     console.log(`Created "notes" table`);
 
-    // Insert data into the "notesPages" table
-    const insertedNotesPages = await Promise.all(
-      notesPages.map(async (notePg) => {
-        return client.sql`
-        INSERT INTO notesPages (id, fk_user)
-        VALUES (${notePg.id}, ${notePg.fk_user} )
-        ;
-      `;
-      }),
-    );
-    console.log(`Seeded ${insertedNotesPages.length} notes pages`);
-
-    // Insert data into the "notes" table
     const insertedNotes = await Promise.all(
       notes.map(async (note) => {
         return client.sql`
@@ -102,8 +121,6 @@ async function seedNotes(client) {
 
     return {
       createNotesTable,
-      createNotesPagesTable,
-      savedNotesPage: insertedNotesPages,
       savedNotes: insertedNotes,
     };
   } catch (error) {
@@ -115,25 +132,14 @@ async function seedNotes(client) {
 async function seedGoals(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createGoalsPagesTable = await client.sql`
-    CREATE TABLE IF NOT EXISTS goalsPages (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-      fk_user UUID DEFAULT uuid_generate_v4(), 
-        constraint fk_user_goalsPG
-        foreign key (fk_user) 
-        REFERENCES users(id)
-    );
-    `;
-
-    console.log(`Created "goals pages" table`);
 
     const createGoalsTable = await client.sql`
       CREATE TABLE IF NOT EXISTS goals (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         fk_goal_pg UUID DEFAULT uuid_generate_v4(), 
-          constraint fk_goals_goalPG
+          constraint fk_goals_pages
           foreign key (fk_goal_pg) 
-          REFERENCES goalsPages(id),
+          REFERENCES pages(id),
         title VARCHAR(255)
       );
     `;
@@ -152,19 +158,6 @@ async function seedGoals(client) {
     `;
 
     console.log(`Created "goal completion" table`);
-
-    // Insert data into the "goalsPages" table
-    const insertedGoalsPages = await Promise.all(
-      goalsPages.map(async (goalPage) => {
-        return client.sql`
-        INSERT INTO goalsPages (id, fk_user)
-        VALUES (${goalPage.id}, ${goalPage.fk_user})
-        ON CONFLICT (id) DO NOTHING;
-      `;
-      }),
-    );
-
-    console.log(`Seeded ${insertedGoalsPages.length} goals pages`);
 
     // Insert data into the "goals" table
     const insertedGoals = await Promise.all(
@@ -193,10 +186,8 @@ async function seedGoals(client) {
     console.log(`Seeded ${insertedGoalStatus.length} goal completion`);
 
     return {
-      createGoalsPagesTable,
       createGoalsTable,
       createCompletionTable,
-      savedGoalsPages: insertedGoalsPages,
       savedGoals: insertedGoals,
       savedGoalStatus: insertedGoalStatus
     };
@@ -208,21 +199,7 @@ async function seedGoals(client) {
 
 async function seedRanking(client) {
   try {
-    //await client.sql`DROP TABLE users`
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    //ranking is a ranking page. rename?
-    const createRankPageTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS rankPages (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        fk_user UUID DEFAULT uuid_generate_v4(), 
-          constraint fk_user_ranking
-          foreign key (fk_user) 
-          REFERENCES users(id),
-        title VARCHAR(255)
-      );
-    `;
-
-    console.log(`Created "ranking" table`);
 
     const createSettingsTable = await client.sql`
       CREATE TABLE IF NOT EXISTS rankSettings (
@@ -230,7 +207,7 @@ async function seedRanking(client) {
         fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
           constraint fk_page_settings
           foreign key (fk_rank_pg) 
-          REFERENCES rankPages(id),
+          REFERENCES pages(id),
         rank_int INT,
         color VARCHAR(255),
         phrase VARCHAR(255)
@@ -245,7 +222,7 @@ async function seedRanking(client) {
         fk_rank_pg UUID DEFAULT uuid_generate_v4(), 
           constraint fk_page_unit
           foreign key (fk_rank_pg) 
-          REFERENCES rankPages(id),
+          REFERENCES pages(id),
         fk_status UUID DEFAULT uuid_generate_v4(), 
           constraint fk_rank_setting
           foreign key (fk_status) 
@@ -255,22 +232,7 @@ async function seedRanking(client) {
     `;
 
     console.log(`Created "rank" table`);
-
-    // Insert data into the "ranking" table
-    const insertedRankPage = await Promise.all(
-      rankPages.map(async (rankPg) => {
-        return client.sql`
-        INSERT INTO rankPages (id, fk_user, title)
-        VALUES (${rankPg.id}, ${rankPg.user_id}, ${rankPg.title})
-        ON CONFLICT (id) DO NOTHING;
-      `;
-      }),
-    );
-
-    console.log(`Seeded ${insertedRankPage.length} rank pages`);
-
     
-    // Insert data into the "rank settings" table
     const insertedRankSettings = await Promise.all(
       rankSettings.map(async (rankSet) => {
         return client.sql`
@@ -283,7 +245,6 @@ async function seedRanking(client) {
 
     console.log(`Seeded ${insertedRankSettings.length} rank settings`);
 
-    // Insert data into the "ranks" table
     const insertedRanks = await Promise.all(
       rankingUnit.map(async (rankUnit) => {
         return client.sql`
@@ -297,10 +258,8 @@ async function seedRanking(client) {
     console.log(`Seeded ${insertedRanks.length} ranks`);
 
     return {
-      createRankPageTable,
       createSettingsTable,
       createRanksTable,
-      savedRankPage: insertedRankPage,
       savedRankSettings: insertedRankSettings,
       savedRanks: insertedRanks,
     };
@@ -314,6 +273,7 @@ async function main() {
   const client = await db.connect();
 
   await seedUsers(client);
+  await seedPages(client);
   await seedNotes(client);
   await seedGoals(client);
   await seedRanking(client);

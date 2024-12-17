@@ -2,9 +2,7 @@
 "use client"
 //can the tabs be veritcal?
 //should menu items be categories or individual pages??? start w individual pages
-//willsubheader be pulling from db too much for user info? page reloads? or does next handle state and remount???
-//userPage type MUST be in line with url/page naming 
-// tab not showing as "active" upon navigating... why not
+//make sure all tabs are visible.. somewhow
 import { daysInMonth, date, firstDayOfMonth } from "../utils/dateUtils.js";
 import { Box,
   Menu,
@@ -58,6 +56,20 @@ export const Header = (props) => {
         console.log(error)
     }
   }
+//add dropdown?
+  // <Menu>
+  //           <MenuButton as={Button} >
+  //             +
+  //           </MenuButton>
+  //           <MenuList>
+ 
+  //               <MenuItem>
+  //               <Link as={NextLink} href='/availablePages'>
+  //                 ...
+  //               </Link>
+  //               </MenuItem>
+  //           </MenuList>
+  //         </Menu>
 
   return ( 
     <Box>
@@ -65,23 +77,13 @@ export const Header = (props) => {
         <TabList >
           {userPages.map((page) => {
             return  <Tab key={`${page.id}`} onClick={() => router.push(`/${page.type}/${page.id}`)}>                 
-            {page.type} 
+              {page.title} 
             </Tab>
           })}
-          
-          <Menu>
-            <MenuButton as={Button} >
-              +
-            </MenuButton>
-            <MenuList>
- 
-                <MenuItem>
-                <Link as={NextLink} href='/availablePages'>
-                  ...
-                </Link>
-                </MenuItem>
-            </MenuList>
-          </Menu>
+
+          <Tab onClick={() => router.push(`/availablePages`)}>                 
+            +
+          </Tab>
 
         </TabList>
       </Tabs>

@@ -20,13 +20,33 @@ const users = [
   // notesTable = { id: 0, fk_user_id: '', date: date, note: string}
   // goalsTable = {id: 0, fk_user_id: '', type: string}
   //     completion = {goaltype_id: fk individual goal, date: date }
-  notesPages = [
+  pages = [
     { 
       id: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
       fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+      type: 'notes',
+      title: 'gratitude'
+    },
+    { 
+      id: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d',
+      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
+      type: 'goals',
+      title: 'chores'
+    },
+    {
+      id: '6a54003e-8260-4245-b073-221ca81f6c66',
+      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      type: 'rank',
+      title: 'mood'
+    },
+    {
+      id: '83c164ad-e7bb-4ee1-bcbc-c89345709117',
+      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
+      type: 'rank',
+      title: 'weather'
     }
-
   ]
+
   notes = [
     {
       id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
@@ -52,14 +72,6 @@ const users = [
       date: '2024-11-11',
       note: 'a 4th thing'
     }
-  ]
-
-  goalsPages = [
-    { 
-      id: 'f348abf8-6a35-4f4f-a275-bf4aab188f1d',
-      fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a', 
-    }
-
   ]
 
   goals = [
@@ -135,19 +147,6 @@ const users = [
       status: true
     }
 
-  ]
-
-  rankPages= [
-    {
-      id: '6a54003e-8260-4245-b073-221ca81f6c66',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-      title: 'mood',
-    },
-    {
-      id: '83c164ad-e7bb-4ee1-bcbc-c89345709117',
-      user_id: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-      title: 'mood',
-    },
   ]
 
   rankingUnit = [
@@ -249,7 +248,8 @@ const fakeDBData = [
 
 module.exports = {
   users, 
-  notesPages, notes, 
-  goalsPages, goals, goalCompletions, 
-  rankPages, rankingUnit, rankSettings
+  pages,
+  notes, 
+  goals, goalCompletions, 
+  rankingUnit, rankSettings
 };

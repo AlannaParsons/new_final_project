@@ -4,12 +4,10 @@ const { db } = require('@vercel/postgres');
 async function main() {
     const client = await db.connect();
     await client.sql`DROP TABLE IF EXISTS users CASCADE;`
-    await client.sql`DROP TABLE IF EXISTS notesPages CASCADE;`
-    await client.sql`DROP TABLE IF EXISTS notes CASCADE;`
-    await client.sql`DROP TABLE IF EXISTS goalsPages CASCADE;`
+    await client.sql`DROP TABLE IF EXISTS pages CASCADE;`
+    await client.sql`DROP TABLE IF EXISTS notes CASCADE;` 
     await client.sql`DROP TABLE IF EXISTS goals CASCADE;`
     await client.sql`DROP TABLE IF EXISTS goalCompletion CASCADE;`
-    await client.sql`DROP TABLE IF EXISTS rankPages CASCADE;`
     await client.sql`DROP TABLE IF EXISTS rankSettings CASCADE;`
     await client.sql`DROP TABLE IF EXISTS ranks CASCADE;`
 
