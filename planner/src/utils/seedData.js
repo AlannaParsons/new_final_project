@@ -16,10 +16,6 @@ const users = [
   },
 ]; 
 
-  // rankingTable = { id: 0, fk_user_id: '', date: date, ranking: fk to settings or color string }
-  // notesTable = { id: 0, fk_user_id: '', date: date, note: string}
-  // goalsTable = {id: 0, fk_user_id: '', type: string}
-  //     completion = {goaltype_id: fk individual goal, date: date }
   pages = [
     { 
       id: '5f70f8be-164d-4762-bbdd-9c5c2b46d48b',
@@ -36,13 +32,13 @@ const users = [
     {
       id: '6a54003e-8260-4245-b073-221ca81f6c66',
       fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-      type: 'rank',
+      type: 'ranks',
       title: 'mood'
     },
     {
       id: '83c164ad-e7bb-4ee1-bcbc-c89345709117',
       fk_user: '3958dc9e-712f-4377-85e9-fec4b6a6442a',
-      type: 'rank',
+      type: 'ranks',
       title: 'weather'
     }
   ]
