@@ -43,32 +43,32 @@ export async function GET(req, res){
     // returns all pages, even if no associated data. 
 
     let rankdata = await client.sql`
-      SELECT rankpages.id, rankpages.title, ranks.id AS rank_id, fk_status, date AS completed, color, phrase
-      FROM rankpages
-      LEFT JOIN ranks ON ranks.fk_rank_pg = rankpages.id
-        AND date = ${dateNoTimeStr}
-      LEFT JOIN ranksettings ON fk_status = ranksettings.id;
+      SELECT pages.id, pages.title, ranks.id AS rank_id, fk_status, date AS completed, color, phrase
+      FROM pages 
+      LEFT JOIN ranks ON ranks.fk_rank_pg = pages.id
+      LEFT JOIN ranksettings ON fk_status = ranksettings.id
+      WHERE type = 'ranks' AND date = ${dateNoTimeStr}
     `;
 
     let notedata = await client.sql`
-      SELECT notespages.id, notes.id AS note_id, date AS completed, note
-      FROM notespages
-      LEFT JOIN notes ON notes.fk_note_pg = notespages.id
-      AND date = ${dateNoTimeStr}
+      SELECT pages.id, notes.id AS note_id, date AS completed, note
+      FROM pages
+      LEFT JOIN notes ON notes.fk_note_pg = pages.id
+      WHERE type = 'notes' AND date = ${dateNoTimeStr}
     `;
 
     //current version returns one piece of data per goal page, each goal item is obj in goals array
     let goalsdata = await client.sql`
-      SELECT goalspages.id, jsonb_agg(jsonb_build_object(
-          'goal_id', goals.id, 
-          'title', title, 
-          'completed', goalcompletion.date
-        )) goals
-      FROM goalspages
-      LEFT JOIN goals ON goals.fk_goal_pg = goalspages.id
-      LEFT JOIN goalcompletion ON goals.id = fk_goal 
-      AND date = ${dateNoTimeStr}
-      GROUP BY goalspages.id
+      SELECT pages.id, jsonb_agg(jsonb_build_object(
+        'goal_id', goals.id, 
+        'title', goals.title, 
+        'completed', goalcompletion.date
+      )) goals
+      FROM pages
+      LEFT JOIN goals ON goals.fk_goal_pg = pages.id
+      LEFT JOIN goalcompletion ON goals.id = fk_goal AND date = ${dateNoTimeStr}
+      WHERE type = 'goals' 
+      GROUP BY pages.id
     `;
   
     // if data put into data structure? likely not necessary
