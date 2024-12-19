@@ -1,12 +1,12 @@
 //page to give users detailed journal page options
+//  present user w categories of pages, then subtypes w examples, when clicked start add process, using user input
 //---------------------------------------------------
 // notes: 
-//    how to attach saved page types to user
 //    when page is clicked, should it take user to example page THEN add??? or just add
 //  example images added, to be replaced later
 // pages could be split into categories, then multiple pages of that ype given. BUT pages are so versatile, how to categorize them
 // could pop out seperate page add components, each page will need different starter data???
-// dont love naming, rename
+// dont love naming 'available pages', rename
 // api/${page.type}Pages will have to change ??? pathing is a concern when differnt types of page are added
 //only first example of each subtype will work, other subtypes dont exist, placeholder only, do error handling
 //should title addition be necessary, if not, hpw to handle elsewhere?? valid placeholders?
@@ -14,7 +14,6 @@
 
 import styles from "../page.module.css";
 import {   
-  Box,
   Button,
   Center,
   Flex,
@@ -23,12 +22,8 @@ import {
   FormLabel,
   Grid,
   GridItem,
-  Icon,
-  IconButton,
   Image,
   Input, 
-  InputGroup, 
-  InputLeftAddon,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -38,21 +33,18 @@ import {
   ModalCloseButton,
   SimpleGrid,
   Spacer,
-  Tooltip,
   useDisclosure,
-  useToast,
-  VStack, 
-  Container,
-  HStack} from '@chakra-ui/react';
-import { CheckIcon, EditIcon, DeleteIcon } from '@chakra-ui/icons';
-import { colorLegend, availablePages } from '@/utils/mockData.js';
-import React, { useState, useEffect, Fragment } from "react";
+  useToast, 
+  Container
+} from '@chakra-ui/react';
+import { availablePages } from '@/utils/constants';
+import React, { useState, Fragment } from "react";
 
 export default function AllPages() {
   let user_id = '3958dc9e-712f-4377-85e9-fec4b6a6442a';
   const toast = useToast();
-  const [activePage, setactivePage] = useState();
-  const [activeCategory, setactiveCategory] = useState();
+  const [activePage, setActivePage] = useState();
+  const [activeCategory, setActiveCategory] = useState();
   const { onOpen: onAddPageOpen, onClose: onAddPageClose, isOpen: isAddPageOpen } = useDisclosure();
   const { onOpen: onCategoryOpen, onClose: onCategoryClose, isOpen: isCategoryOpen } = useDisclosure();
   const [inputTitle, setInputTitle] = useState('');
@@ -60,18 +52,13 @@ export default function AllPages() {
   // hold any extra form data to add to db?
   let data;
 
-
   const handleInputChange = (e) => setInputTitle(e.target.value);
 
-
   const addPage = async (newPage) => {
-    //use existing hook or make new??????
     //include data: to add extra level of info into db
     //rename pages in api-> page (only interacting w 1 page at a time)
     // page. type may not work for api pathing if multiple goal types exists.... specificity needed
     // subtype is supposed to be specific>? make sure
-    console.log('adding page', activePage)
-    
 
     try {
       const res = await fetch(`/api/${activePage.type}Pages`,{
@@ -94,17 +81,13 @@ export default function AllPages() {
   }
 
   const pageTypeClick = (category) => {
-    console.log('page clicl',category)
-    setactiveCategory(category)
-
+    setActiveCategory(category)
     onCategoryOpen()
   }
 
   
   const addPageClick = (page) => {
-    console.log('add page clickl clicl',page)
-    setactivePage(page)
- 
+    setActivePage(page)
     onAddPageOpen()
   }
 
