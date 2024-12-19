@@ -1,6 +1,7 @@
 // Grab all info for date aggrigate page
 // currently doesn't pull by user id. may not be necessary w eventual local storage
 // get all pages from user, use pages to get individual data from date per page
+ 
 import { NextResponse } from "next/server";
 const { db } = require('@vercel/postgres');
 const bcrypt = require('bcrypt');
@@ -22,39 +23,22 @@ export async function GET(req, res){
   try {
     //without user pages.. how do calls know? i dont know. magic. further testing needed
 
-    // let notesTemp = await client.sql`
-    // SELECT *
-    // FROM notesPages
-    // `;
-
-    // let ranksTemp = await client.sql`
-    // SELECT *
-    // FROM rankPages
-    // `;
-
-    // let goalsTemp = await client.sql`
-    // SELECT *
-    // FROM goalsPages
-    // `;
-
-    // const [notePage, rankPage, goalsPage] = await Promise.all([notesTemp, ranksTemp, goalsTemp])
-
     // expect single data point per rank page
     // returns all pages, even if no associated data. 
 
     let rankdata = await client.sql`
       SELECT pages.id, pages.title, ranks.id AS rank_id, fk_status, date AS completed, color, phrase
       FROM pages 
-      LEFT JOIN ranks ON ranks.fk_rank_pg = pages.id
+      LEFT JOIN ranks ON ranks.fk_rank_pg = pages.id AND date = ${dateNoTimeStr}
       LEFT JOIN ranksettings ON fk_status = ranksettings.id
-      WHERE type = 'ranks' AND date = ${dateNoTimeStr}
+      WHERE type = 'ranks' 
     `;
 
     let notedata = await client.sql`
       SELECT pages.id, notes.id AS note_id, date AS completed, note
       FROM pages
-      LEFT JOIN notes ON notes.fk_note_pg = pages.id
-      WHERE type = 'notes' AND date = ${dateNoTimeStr}
+      LEFT JOIN notes ON notes.fk_note_pg = pages.id AND date = ${dateNoTimeStr}
+      WHERE type = 'notes' 
     `;
 
     //current version returns one piece of data per goal page, each goal item is obj in goals array
