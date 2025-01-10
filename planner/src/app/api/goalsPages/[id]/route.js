@@ -6,18 +6,15 @@ const bcrypt = require('bcrypt');
 
 export async function GET(req, {params}, res){
     let goals;
-    let month = 11;
-    //get user iD!!! OR GOAL PAGE ID
-    if (req.nextUrl.searchParams) {
-        console.log('back end check', req.nextUrl.searchParams.activeDate)
-        console.log('back end check', req.nextUrl.searchParams);
-        let month = new Date(req.nextUrl.searchParams.activeDate).getMonth() + 1;
-    }
-    //
+    let month = 0;
+    let activeDate = new Date(); // attempt error handle? back end should be setting date?
     let id = params.id; //'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
 
-
-
+    if (req.nextUrl.searchParams) {
+        activeDate = new Date(req.nextUrl.searchParams.get('activeDate'));
+        month = activeDate.getMonth() + 1;
+    }
+    
     const client = await db.connect();
     try {
 
@@ -42,8 +39,8 @@ export async function GET(req, {params}, res){
                             ) goalcompletion
                         FROM goals
                         LEFT JOIN goalcompletion ON goals.id = fk_goal 
-                        AND fk_goal_pg = ${id}
-                        AND EXTRACT(MONTH FROM goalcompletion.date) = ${month}
+                            AND fk_goal_pg = ${id}
+                            AND EXTRACT(MONTH FROM goalcompletion.date) = ${month}
                         ) goalcompletion 
                     GROUP BY goalcompletion.id, goalcompletion.title, goalcompletion.fk_goal_pg
                     ) goalcompletion 
@@ -57,59 +54,4 @@ export async function GET(req, {params}, res){
     } finally {
         await client.end();
     }
-}
-
-export async function POST(req, res){
-    const data = await req.json();
-    // change how to store full name???
-    const fullName = `${data.ln}, ${data.fn}`
-    let createdId = null;
-
-    const client = await db.connect();
-    try {
-        
-        const hashedPassword = await bcrypt.hash(data.password, 10);
-        createdId = await client.sql`
-        INSERT INTO accounts (name, email, password, address, phone_number, website)
-        VALUES (${fullName}, ${data.email}, ${hashedPassword},
-            ${data.address}, ${data.phone_number}, ${data.website})
-        RETURNING id;
-        `;
-        
-    } catch (error) {
-        console.error('Error inserting new account:', error);
-        return NextResponse.json({ message: 'Creation Error' }, { status: 400 })
-    } finally {
-        await client.end();
-    }
-
-    return NextResponse.json({ message: 'Account Created' }, { status: 201 })
-}
-
-export async function PATCH(req, { params }, res){
-  //const id = params.id;
-  let account;
-
-  const data = await req.json();
-  const client = await db.connect();
-
-  console.log('inside patch api:', data, params)
-
-  try {
-      
-      // account = await client.sql`
-      //     UPDATE accounts
-      //     SET name=${data.name}, phone_number=${data.phone_number}, 
-      //         email=${data.email}, address=${data.address}, website=${data.website}
-      //     WHERE id = ${id};
-      // `;
-      
-  } catch (error) {
-      console.error('Error updating account:', error);
-      return NextResponse.json({ message: 'Patch Error' }, { status: 400 })
-  } finally {
-      await client.end();
-  }
-
-  return NextResponse.json({ message: 'Account Updated' }, { status: 201 })
 }
