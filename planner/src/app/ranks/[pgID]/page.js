@@ -21,10 +21,13 @@
 // post patch running a little slow, come back for potential optimization. optomistically change state??
 //use rank int later to allow for dynamic color legend... if legend is changed, how to deal with old data?
 //consider how user is setting up color legend initially. settings page usage?
+//error handle delete unset date
+//
+
 "use client"
 
 import styles from "@/app/page.module.css";
-import { date, firstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils"
+import { date, getFirstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils"
 import {
   Box,
   Button,
@@ -236,7 +239,7 @@ export default function Ranking() {
 
 
         <SimpleGrid columns={7} spacing={1}> {/*  empty slots */}
-          {[...Array(firstDayOfMonth)].map(function (object, i) {
+          {[...Array(getFirstDayOfMonth(activeDate))].map(function (object, i) {
             return <Button key={i} height='20px' />;
           })}
 
