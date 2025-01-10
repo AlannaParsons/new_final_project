@@ -1,12 +1,14 @@
 // returns note data for single given date
+
+// should data not be array? consistent w goals
 //  db data in: [{
 //   id: #, 
 //   title: string
-//   data: {
+//   data: [{
   //   note_id: null, 
   //   completed: null, 
   //   note: null
-  // }
+  // }]
 // }, ...]
 //-------------------------------------------------------------
 
@@ -23,8 +25,8 @@ export default function DateNote(page) {
     <Box> 
       { page ? (
         <div>
-          <Tag key={page.id} variant='solid' colorScheme={page.data.completed === null ? 'red' : 'blue' }>
-            { page.data.note ? page.data.note : placeholder}
+          <Tag key={page.id} variant='solid' colorScheme={page.data[0].completed === null ? 'red' : 'blue' }>
+            { page.data[0].note ? page.data[0].note : placeholder}
           </Tag> 
         </div>
       ) : (

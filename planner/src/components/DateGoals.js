@@ -1,13 +1,13 @@
 // returns activeData data for single given date. expect 1 pg in, 1 component out
 //
-//  db data in: {
+//  db data in: [{
   // id: #, 
   // title: string,
   // data: [{
   //   completed: "2024-12-12T07:00:00.000Z" || null
   //   goal_id: #
   //   title: string}, ...]
-  // }
+  // }, ...]
 //
 //-------------------------------------------------------------
 
