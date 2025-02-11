@@ -94,7 +94,7 @@ export default function Notes() {
 
   const postNotes = async (newNotes) => {
     try {
-      const res = await fetch(`/api/notes/${id}?activeDate=${activeDate}`,{
+      const res = await fetch(`/api/notes?activeDate=${activeDate}`,{
         method: 'POST',
         body: JSON.stringify({id: id, notes: newNotes}),
         headers: {

@@ -125,10 +125,16 @@ limitations -
     - ranks and notes similar front end. edit goals to match?
     - plan is for data to be stored locally. database set up is for showing purpose???
     - remove all user reference??? data should be held locally... will change ALL db storage usage... unsure...
-
+    - will have to be more precise with naming, categories and subtypes getting confused
+    - when page is added, should user include additional data????? another modal
+    - should title be necessary when adding journal pages???
+    - date aggregate page data: should be array? sometimes expect multiple, sometimes single...
+    - '@chakra-ui/icons needs 'use client'... replace icons?
 # Future Dev 
 
 - generate aesthetic palette for user
 https://coolors.co/353531-ec4e20-ff9505-016fb9-000000
  https://www.reddit.com/r/gamedev/comments/1b9qvip/palette_generation_api_looking_for_an_alternative/?rdt=58257
 
+# Bugs:
+  - calendar not generating correctly (sat-fri instead of sun-sat), new year broke this???

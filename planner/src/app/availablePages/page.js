@@ -10,6 +10,7 @@
 // api/${page.type}Pages will have to change ??? pathing is a concern when differnt types of page are added
 //only first example of each subtype will work, other subtypes dont exist, placeholder only, do error handling
 //should title addition be necessary, if not, hpw to handle elsewhere?? valid placeholders?
+// update subheader update upon add.
 "use client"
 
 import styles from "../page.module.css";
@@ -19,6 +20,7 @@ import {
   Flex,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Grid,
   GridItem,
@@ -78,6 +80,7 @@ export default function AllPages() {
     } catch (error) {
         console.log(error)
     }
+    onAddPageClose()
   }
 
   const pageTypeClick = (category) => {

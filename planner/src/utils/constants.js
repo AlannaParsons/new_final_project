@@ -5,6 +5,8 @@
 //consider categorizing page types. consider each "type", store in db?
 //  - may lead to renaming of active pages
 
+import { CalendarIcon, ChatIcon, UnlockIcon } from '@chakra-ui/icons';
+
 
 const rankExamples = [{type: 'ranks', blurb: 'attribute value everyday based on individualized legend. ex: weather tracking, mood tracking etc.' , img: `/images/score.jpg`},
                       {type: 'unspecifiedrank', blurb: 'not active' , img: `/images/rank.jpg`}]

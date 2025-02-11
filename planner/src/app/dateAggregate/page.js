@@ -21,40 +21,27 @@
 "use client"
 
 import styles from "@/app/page.module.css";
-import { date, firstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils"
+import { date } from "@/utils/dateUtils"
 import {
-  Box,
   Button,
   HStack,
-  SimpleGrid,
-  Spinner,
-  Tag,
-  TagLabel,
-  useToast
+  Spinner
 } from '@chakra-ui/react';
 import React, { useState, useEffect, Fragment } from "react";
 import { SubHeader } from '@/components/SubHeader';
-import DateRanks from '@/components/DateRanks';
-import DateNotes from '@/components/DateNotes';
-//import DateGoals from '@/components/DateGoals';
 
 export default function DateAggrigate() {
   // pointless if i move to local storage...
   let user = '3958dc9e-712f-4377-85e9-fec4b6a6442a';
   const [activeDate, setActiveDate] = useState(date);
   const [initialLoad, setInitialLoad] = useState(true);
-  // single piece of data per page
   const [activeData, setActiveData] = useState([]);
 
   //shuffle order on page load
-
-
-  //maintain page prder, get necessary date data
+  //maintain page order when date changed, get necessary date data
   useEffect(() => {
     getPages(user)
   }, [activeDate]);
-
-
 
   const getPages = async () => {
     try {
@@ -68,7 +55,7 @@ export default function DateAggrigate() {
       if(res.ok){
         let response = await res.json()
         //shuffling in place? may not be necessary?
-        console.log('states', initialLoad)
+
         if (initialLoad) {
           //check if shuffle is necessary? grabbing data at random so original order always random? trust this>?
           shuffleArray(response)

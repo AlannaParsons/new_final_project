@@ -7,9 +7,9 @@
   // title : "exercise"
 // }, ...]
 //  data internal: [{
-// id: '15', 
-// date: "2024-11-09T07:00:00.000Z",
-// color: 'red'}, ...]
+  // completion : (31) [null, true,...]
+  // id : "27e6f92f-23bb-49e0-87ec-796568eaef0e"
+  // title : "exercise"
 //
 //..................................................................................
 // notes/edits:
@@ -24,16 +24,16 @@
 //  change how saving items works. db response to pot should be newest version of data
 // put data into structure on load, different from notes...
 //rename userData => activeData
+//to do
 
 // bugs:
 //  bug w modal, focus issue
-//
+//  not filtering month properly
 
 "use client"
 
-import Image from "next/image";
 import styles from "@/app/page.module.css";
-import { daysInMonth, firstDayOfMonth, getFirstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils.js";
+import { daysInMonth, getFirstDayOfMonth, getDaysInMonth } from "@/utils/dateUtils.js";
 import {
   Box,
   Button,
@@ -67,15 +67,9 @@ import { Suspense } from 'react';
 
 export default function Goals() {
 
-  const {id} = useParams();
+  const {id} = useParams();   //let pgID = 'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
 
   const { onOpen, onClose, isOpen } = useDisclosure()
-  //let pgID = 'f348abf8-6a35-4f4f-a275-bf4aab188f1d'
-
-  //data structure????
-  //should only successful complettions save? probably. leave status property for clarity and error checking?
-  // const goalData = [{'id': goalID, 'title':'exercise','completion' : [bool array, entry per date]}, 
-
   // all user goals from given page id @ active date
   const [userData, setData] = useState([]);
   //change name, confusion? goalCopy??
@@ -101,7 +95,7 @@ export default function Goals() {
       
       if(res.ok){
         let response = await res.json()
-        //console.log('resp',response)
+        console.log('resp',response)
         
         let temp = [];
         for (let goal of response.goallist) {
@@ -311,7 +305,7 @@ export default function Goals() {
         </Suspense>
       </main>
       <footer className={styles.footer}>
-      <Box position='fixed' bottom='1em' right='1em' >
+        <Box position='fixed' bottom='1em' right='1em' >
           <Button onClick={() => {testFunc()}} colorScheme='green'> Test</Button>
         </Box>
       </footer>

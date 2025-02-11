@@ -15,7 +15,10 @@ import { Box,
   Button } from '@chakra-ui/react'
   import NextLink from 'next/link'
   import { Link } from '@chakra-ui/react'
-  
+  import { PageControls } from '@/components/PageControls';
+
+  import { usePathname } from 'next/navigation'
+
 import { fakeDBData, availablePages } from '../utils/mockData.js';
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from 'next/navigation';
@@ -24,6 +27,7 @@ export const Header = (props) => {
   let user = '3958dc9e-712f-4377-85e9-fec4b6a6442a';
   const router = useRouter()
   const [userPages, setUserPages] = useState([]);
+  const [activePage, setActivePage] = useState(usePathname());
   //temporary addPage, will need to save to db
   // const addPage = (type) => {
   //   let helper = [...userPages, {id: 2, type, user_id : 123, dataArray : [], month: 11, year: 2024 } ]
@@ -34,6 +38,8 @@ export const Header = (props) => {
   useEffect(() => {
     getPages(user)
   }, []);
+
+  console.log('route?', usePathname())
 
   const getPages = async (userID) => {
     try {
@@ -69,15 +75,24 @@ export const Header = (props) => {
   //               </Link>
   //               </MenuItem>
   //           </MenuList>
-  //         </Menu>
+  //         </Menu>           <PageControls/>
+
+  const clickHandler = (page, event) => {
+
+    router.push(`/${page.type}/${page.id}`)
+    //let local = element.getBoundingClientRect()
+    console.log('check data', event.target)
+  }
+  
 
   return ( 
     <Box>
       <Tabs isManual variant="enclosed" >
         <TabList >
           {userPages.map((page) => {
-            return  <Tab key={`${page.id}`} onClick={() => router.push(`/${page.type}/${page.id}`)}>                 
+            return  <Tab key={`${page.id}`} onClick={(event) => clickHandler(page, event)}>                 
               {page.title} 
+              
             </Tab>
           })}
 
@@ -87,5 +102,7 @@ export const Header = (props) => {
 
         </TabList>
       </Tabs>
+
+      <PageControls/>
     </Box>
 )}
